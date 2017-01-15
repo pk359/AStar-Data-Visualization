@@ -1,0 +1,23 @@
+{
+  "name": "Project1",
+  "authors": [
+    "Prem Kumra <siwbay@gmail.com>"
+  ],
+  "description": "Frontend UI for Graph and MAP",
+  "main": "",
+  "license": "MIT",
+  "homepage": "index.html",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^3.3.7",
+    "font-awesome": "^4.7.0",
+    "jquery-ui": "^1.12.1"
+  }
+}

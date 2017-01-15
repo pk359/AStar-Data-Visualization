@@ -1,0 +1,184 @@
+[
+  [
+    {
+      "label": "Non-Critical",
+      "materialDescriptor": "NOZZLE INJECTOR:FOR MB O405G BUS",
+      "materialNumber": 6004739,
+      "quantity": 1
+    },
+    {
+      "label": "1",
+      "materialDescriptor": "\"REGULATOR,AIR PRESSURE:FOR MB O405/G BUS\"",
+      "materialNumber": 6005527,
+      "quantity": 1
+    },
+    {
+      "label": "1",
+      "materialDescriptor": "\"DEHYDRATOR,AIR:FOR MB OC500 LE BUS\"",
+      "materialNumber": 6009640,
+      "quantity": 1
+    },
+    {
+      "label": "Non-Critical",
+      "materialDescriptor": "TYRE CASING 195/65R 15:FOR TOYOTA PRIUS",
+      "materialNumber": 6503707,
+      "quantity": 228
+    },
+    {
+      "label": "1103",
+      "materialDescriptor": "\"TYRE:195/65R15,FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6503707,
+      "quantity": 1103
+    },
+    {
+      "label": "12",
+      "materialDescriptor": "\"TYRE:205/65 R15,FOR CHEVROLET EPICA TAXI\"",
+      "materialNumber": 6503708,
+      "quantity": 12
+    },
+    {
+      "label": "2",
+      "materialDescriptor": "\"FILTER ELEMENT:AIR CLEANER,CHEV EPICA\"",
+      "materialNumber": 6504503,
+      "quantity": 2
+    },
+    {
+      "label": "Non-Critical",
+      "materialDescriptor": "ALTERNATOR FOR CHEVROLET EPICA",
+      "materialNumber": 6504512,
+      "quantity": 1
+    },
+    {
+      "label": "2",
+      "materialDescriptor": "\"BULB,FRT FOG LP FOR CHEVROLET EPICA\"",
+      "materialNumber": 6504536,
+      "quantity": 2
+    },
+    {
+      "label": "1",
+      "materialDescriptor": "\"FLUID:ATF,FOR CHEVROLET EPICA\"",
+      "materialNumber": 6504547,
+      "quantity": 1
+    },
+    {
+      "label": "1",
+      "materialDescriptor": "\"ABSORBER,FRONT:FOR LONDON TX4 TAXI\"",
+      "materialNumber": 6505248,
+      "quantity": 1
+    },
+    {
+      "label": "3850",
+      "materialDescriptor": "\"FILTER ELEMENT,OIL:FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505284,
+      "quantity": 3850
+    },
+    {
+      "label": "2",
+      "materialDescriptor": "\"CAP,OIL FILTER:FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505285,
+      "quantity": 2
+    },
+    {
+      "label": "2217",
+      "materialDescriptor": "\"FILTER ELEMENT,AIR:FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505286,
+      "quantity": 2217
+    },
+    {
+      "label": "80",
+      "materialDescriptor": "\"PLUG,SPARK:FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505287,
+      "quantity": 80
+    },
+    {
+      "label": "210",
+      "materialDescriptor": "\"WASHER,DRAIN PLUG:FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505292,
+      "quantity": 210
+    },
+    {
+      "label": "2",
+      "materialDescriptor": "\"PLUG,DRAIN:FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505293,
+      "quantity": 2
+    },
+    {
+      "label": "1",
+      "materialDescriptor": "\"SHOCK ABSORBER:REAR,FOR TOYOTA PRIUS\"",
+      "materialNumber": 6505340,
+      "quantity": 1
+    },
+    {
+      "label": "2",
+      "materialDescriptor": "\"BOLT,REAR WHEEL:FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505350,
+      "quantity": 2
+    },
+    {
+      "label": "3",
+      "materialDescriptor": "\"HUB ASSY,FRONT WHEEL:FOR TOYOTA PRIUS\"",
+      "materialNumber": 6505351,
+      "quantity": 3
+    },
+    {
+      "label": "1",
+      "materialDescriptor": "\"COOLANT,ENGINE:FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505365,
+      "quantity": 1
+    },
+    {
+      "label": "294",
+      "materialDescriptor": "\"FLUID:ATF,FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505366,
+      "quantity": 294
+    },
+    {
+      "label": "164",
+      "materialDescriptor": "\"FILTER,AIR-CON:FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505369,
+      "quantity": 164
+    },
+    {
+      "label": "14",
+      "materialDescriptor": "\"BULB,FOG LAMP:FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505382,
+      "quantity": 14
+    },
+    {
+      "label": "3",
+      "materialDescriptor": "\"HEADLAMP:RH,FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505437,
+      "quantity": 3
+    },
+    {
+      "label": "1",
+      "materialDescriptor": "\"COVER,FUEL CAP:FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505593,
+      "quantity": 1
+    },
+    {
+      "label": "2",
+      "materialDescriptor": "\"JAR,WIPER WASHER:FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505596,
+      "quantity": 2
+    },
+    {
+      "label": "4",
+      "materialDescriptor": "\"RIM,TYRE:FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505658,
+      "quantity": 4
+    },
+    {
+      "label": "1",
+      "materialDescriptor": "\"VALVE:FOR ABS MODULE,CHEVROLET TAXI\"",
+      "materialNumber": 6505675,
+      "quantity": 1
+    },
+    {
+      "label": "5",
+      "materialDescriptor": "\"NUT,WHEEL:FOR TOYOTA PRIUS TAXI\"",
+      "materialNumber": 6505677,
+      "quantity": 5
+    }
+  ]
+]
