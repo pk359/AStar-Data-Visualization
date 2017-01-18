@@ -101,7 +101,3 @@ circle.circle:hover {
 .grid path {
     stroke-width: 0;
 }
-.layover-bar:hover{
-    opacity: 0.2;
-    z-index: -1;
-}
