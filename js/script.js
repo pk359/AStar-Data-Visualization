@@ -55,21 +55,102 @@ function adjustMenuBar() {
 //D3 scatterplot
 function wp2c01(fields) {
     $('.result-div').empty();
-    var url = `http://10.217.163.143:8080/wp2c1?start_date=${fields[0]}&end_date=${fields[1]}&option=${fields[2]}`;
+    var url = `http://10.217.163.175:8080/wp2c1?start_date=${fields[0]}&end_date=${fields[1]}&option=${fields[2]}`;
     $.getJSON(url)
         .done(function (json) {
             data = json[0];
             if (data.length <= 0) {
                 alert("No data available")
             } else {
-                //createSVGBarebones returns [data,tip, g, x, y] as array
                 var option = fields[2] == '2' ? "cost" : "quantity";
-                var svgData = createSVGBarebones(data, option);
-                var data = svgData[0],
-                    tip = svgData[1],
-                    g = svgData[2],
-                    x = svgData[3],
-                    y = svgData[4];
+                $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
+                data = data.sort(function (a, b) {
+                    return a[option] - b[option];
+                });
+                var svg = d3.select("svg"),
+                    margin = {
+                        top: 20,
+                        right: 20,
+                        bottom: 60,
+                        left: 50
+                    },
+                    width = +svg.attr("width") - margin.left - margin.right,
+                    height = +svg.attr("height") - margin.top - margin.bottom;
+
+
+                var x = d3.scaleBand().rangeRound([0, width]).padding(.1);
+                //y = d3.scaleLinear().rangeRound([height, 0]);
+
+                var y = d3.scaleLog()
+                    .rangeRound([height, 0]);
+
+                x.domain(data.map(function (d, i) {
+                    return d['materialNumber'];
+                }));
+
+                y.domain([0.1, d3.max(data, function (d) {
+                    return d[option];
+                })]);
+                //y.domain([0.1, data[data.length -1]]);
+
+                var tip = d3.tip()
+                    .attr('class', 'd3-tip')
+                    .html(function (d) {
+                        return `
+                        <strong>Label:</strong> <span style='color:red'>${d['label']}</span><br>
+                        <strong>MaterialDescriptor:</strong> <span style='color:red'>${d['materialDescriptor']}</span><br>
+                        <strong>MaterialNumber:</strong> <span style='color:red'>${d['materialNumber']}</span><br>
+                        <strong>${option}:</strong> <span style='color:red'>${d[option]}</span>
+                        `;
+                    });
+                svg.call(tip);
+                var g = svg.append("g")
+                    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+                var xaxis = g.append('g')
+                    .attr('class', 'axis axis--x')
+                    .attr('transform', 'translate(0,' + height + ')')
+                    .call(d3.axisBottom(x));
+
+                xaxis.selectAll("text")
+                    .attr('x', '-8')
+                    .attr("transform", "rotate(-50)")
+                    .attr('text-anchor', 'end')
+                // .attr('dy', '.35em')
+
+
+                xaxis.append('text')
+                    .attr('fill', '#000')
+                    .attr('transform', 'translate(' + width / 2 + ',' + margin.bottom + ')')
+                    .text('Material Number');
+
+                //For Y axis
+                g.append('g')
+                    .attr('class', 'axis axis--y')
+                    .call(d3.axisLeft(y))
+                    .append("text")
+                    .attr('transform', 'translate(-' + margin.left + ',' + height / 2 + ')rotate(-90)')
+                    .attr('dy', '0.71em')
+                    .attr('fill', '#000')
+                    .text(option);
+
+                // add the X gridlines
+                g.append("g")
+                    .attr("class", "grid")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(make_x_gridlines(x)
+                        .tickSize(-height)
+                        .tickFormat("")
+                    )
+
+                // add the Y gridlines
+                g.append("g")
+                    .attr("class", "grid")
+                    .call(make_y_gridlines(y)
+                        .tickSize(-width)
+                        .tickFormat("")
+                    )
+
 
                 g.selectAll('.circle')
                     .data(data)
@@ -79,7 +160,12 @@ function wp2c01(fields) {
                         return x(d['materialNumber']);
                     })
                     .attr('cy', function (d) {
-                        return y(d['quantity']);
+                        if (d['quantity'] <= 0) {
+                            return 0
+                        } else {
+                            return y(d['quantity']);
+                        }
+
                     })
                     .attr('r', 3)
                     .on('mouseover', tip.show)
@@ -89,14 +175,15 @@ function wp2c01(fields) {
                     .on('mouseout', tip.hide)
                     .on('mouseleave', function () {
                         $(this).attr('r', 3);
-                    })
+                    });
+                    $('.result-div').append(`<h4 style="text-align:center">Sorted on <span style="font-size: 24px; color:red">${option}</span> in <strong>ascending order</strong></h4>`);
             }
         });
 }
 
 function wp2c02(fields) {
     $('.result-div').empty();
-    var url = `http://10.217.163.143:8080/wp2c2?start_date=${fields[0]}&end_date=${fields[1]}&option=${fields[2]}&count=${fields[3]}`;
+    var url = `http://10.217.163.175:8080/wp2c2?start_date=${fields[0]}&end_date=${fields[1]}&option=${fields[2]}&count=${fields[3]}`;
     $.getJSON(url)
         .done(function (json) {
             data = json[0];
@@ -105,133 +192,142 @@ function wp2c02(fields) {
             } else {
                 //Create SVG Barebone
                 var option = fields[2] == '2' ? "cost" : "quantity";
-                var svgData = createSVGBarebones(data, option);
-                var data = svgData[0],
-                    tip = svgData[1],
-                    g = svgData[2],
-                    x = svgData[3],
-                    y = svgData[4];
+                $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
+                data = data.sort(function (a, b) {
+                    return a[option] - b[option];
+                });
+                var svg = d3.select("svg")
+                margin = {
+                        top: 20,
+                        right: 20,
+                        bottom: 60,
+                        left: 50
+                    }, width = +svg.attr("width") - margin.left - margin.right,
+                    height = +svg.attr("height") - margin.top - margin.bottom;
+
+
+                var x = d3.scaleBand().rangeRound([0, width]).padding(.1);
+                var y = d3.scaleLog()
+                    .rangeRound([height, 0]);
+
+                x.domain(data.map(function (d, i) {
+                    return d['materialNumber'];
+                }));
+
+                y.domain([0.1, d3.max(data, function (d) {
+                    return d[option];
+                })]);
+
+                var tip = d3.tip()
+                    .attr('class', 'd3-tip')
+                    .html(function (d) {
+                        return `
+                        <strong>Label:</strong> <span style='color:red'>${d['label']}</span><br>
+                        <strong>MaterialDescriptor:</strong> <span style='color:red'>${d['materialDescriptor']}</span><br>
+                        <strong>MaterialNumber:</strong> <span style='color:red'>${d['materialNumber']}</span><br>
+                        <strong>${option}:</strong> <span style='color:red'>${d[option]}</span>
+                        `;
+                    });
+                svg.call(tip);
+                var g = svg.append("g")
+                    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+                var xaxis = g.append('g')
+                    .attr('class', 'axis axis--x')
+                    .attr('transform', 'translate(0,' + height + ')')
+                    .call(d3.axisBottom(x));
+
+                xaxis.selectAll("text")
+                    .attr('x', '-8')
+                    .attr("transform", "rotate(-50)")
+                    .attr('text-anchor', 'end')
+                // .attr('dy', '.35em')
+
+
+                xaxis.append('text')
+                    .attr('fill', '#000')
+                    .attr('transform', 'translate(' + width / 2 + ',' + margin.bottom + ')')
+                    .text('Material Number');
+
+
+                //For Y axis
+                g.append('g')
+                    .attr('class', 'axis axis--y')
+                    .call(d3.axisLeft(y))
+                    .append("text")
+                    .attr('transform', 'translate(-' + margin.left + ',' + height / 2 + ')rotate(-90)')
+                    .attr('dy', '0.71em')
+                    .attr('fill', '#000')
+                    .text(option)
+
+                // add the X gridlines
+                g.append("g")
+                    .attr("class", "grid")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(make_x_gridlines(x)
+                        .tickSize(-height)
+                        .tickFormat("")
+                    )
+
+                // add the Y gridlines
+                g.append("g")
+                    .attr("class", "grid")
+                    .call(make_y_gridlines(y)
+                        .tickSize(-width)
+                        .tickFormat("")
+                    )
+
+
                 g.selectAll('.bar')
                     .data(data)
                     .enter().append('rect')
                     .attr('class', 'bar')
                     .attr('x', function (d) {
+                        console.log(x(d['materialNumber']));
                         return x(d['materialNumber']);
                     })
-                    .attr('y', function (d) {
+                    .attr('y', function (d, i) {
+                        if (i > 0) {
+                            //If lastmaterial number is same as new one set sameAsLast to true 
+                            if (data[i - 1]['materialNumber'] == d['materialNumber']) {
+                                return y(d[option]) - y(data[i - 1][option]);
+                            }
+                        }
+                        console.log( y(d[option]));
                         return y(d[option]);
                     })
                     .attr('fill', function (d, i) {
                         if (i > 0) {
+                            //If lastmaterial number is same as new one set sameAsLast to true 
                             if (data[i - 1]['materialNumber'] == d['materialNumber']) {
                                 return getRandomColor();
                             }
                         }
                     })
                     .attr('width', x.bandwidth())
-                    .attr('height', function (d) {
+                    .attr('height', function (d, i) {
+                        if (i > 0) {
+                            //If lastmaterial number is same as new one set sameAsLast to true 
+                            if (data[i - 1]['materialNumber'] == d['materialNumber']) {
+                                return height - y(d[option]) - y(data[i - 1][option]);
+                            }
+                        }
                         return height - y(d[option]);
                     })
-                    .on('mouseleave', function (d) {
-                        g.selectAll(".bar").sort(function (a, b) { // select the parent and sort the path's
-                            if (a.id != d.id) return -1; // a is not the hovered element, send "a" to the back
-                            else return 1; // a is the hovered element, bring "a" to the front
-                        });
-                    })
+                    // .on('mouseleave', function (d) {
+                    //     g.selectAll(".bar").sort(function (a, b) { // select the parent and sort the path's
+                    //         if (a.id != d.id) return -1; // a is not the hovered element, send "a" to the back
+                    //         else return 1; // a is the hovered element, bring "a" to the front
+                    //     });
+                    // })
                     .on('mouseover', tip.show)
                     .on('mouseout', tip.hide);
-
+                    $('.result-div').append(`<h4 style="text-align:center">Sorted on <span style="font-size: 24px; color:red">${option}</span> in <strong>ascending order</strong></h4>`);
             }
         });
 }
 
-function createSVGBarebones(data, option) {
-    $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
-    data = data.sort(function (a, b) {
-        return a[option] - b[option];
-    })
-    var svg = d3.select("svg")
-    margin = {
-        top: 20,
-        right: 20,
-        bottom: 60,
-        left: 50
-    }
-    width = +svg.attr("width") - margin.left - margin.right,
-        height = +svg.attr("height") - margin.top - margin.bottom;
 
-    var x = d3.scaleBand().rangeRound([0, width]).padding(.1),
-        y = d3.scaleLinear().rangeRound([height, 0]);
-
-    x.domain(data.map(function (d, i) {
-        return d['materialNumber'];
-    }));
-
-    y.domain([0, d3.max(data, function (d) {
-        return d[option];
-    })]);
-
-    var tip = d3.tip()
-        .attr('class', 'd3-tip')
-        .html(function (d) {
-            return `
-                        <strong>Label:</strong> <span style='color:red'>${d['label']}</span><br>
-                        <strong>MaterialDescriptor:</strong> <span style='color:red'>${d['materialDescriptor']}</span><br>
-                        <strong>MaterialNumber:</strong> <span style='color:red'>${d['materialNumber']}</span><br>
-                        <strong>${option}:</strong> <span style='color:red'>${d[option]}</span>
-                        `;
-        });
-    svg.call(tip);
-    var g = svg.append("g")
-        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-    var xaxis = g.append('g')
-        .attr('class', 'axis axis--x')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call(d3.axisBottom(x));
-
-    xaxis.selectAll("text")
-        .attr('x', '-8')
-        .attr("transform", "rotate(-50)")
-        .attr('text-anchor', 'end')
-    // .attr('dy', '.35em')
-
-
-    xaxis.append('text')
-        .attr('fill', '#000')
-        .attr('transform', 'translate(' + width / 2 + ',' + margin.bottom + ')')
-        .text('Material Number');
-
-
-    //For Y axis
-    g.append('g')
-        .attr('class', 'axis axis--y')
-        .call(d3.axisLeft(y))
-        .append("text")
-        .attr('transform', 'translate(-' + margin.left + ',' + height / 2 + ')rotate(-90)')
-         .attr('dy', '0.71em')
-        .attr('fill', '#000')
-        .text(option)
-
-    // add the X gridlines
-    g.append("g")
-        .attr("class", "grid")
-        .attr("transform", "translate(0," + height + ")")
-        .call(make_x_gridlines(x)
-            .tickSize(-height)
-            .tickFormat("")
-        )
-
-    // add the Y gridlines
-    g.append("g")
-        .attr("class", "grid")
-        .call(make_y_gridlines(y)
-            .tickSize(-width)
-            .tickFormat("")
-        )
-
-    return [data, tip, g, x, y];
-}
 
 //Get random color
 function getRandomColor() {
@@ -245,11 +341,11 @@ function getRandomColor() {
 // gridlines in x axis function
 function make_x_gridlines(x) {
     return d3.axisBottom(x)
-        .ticks(10)
+        .ticks(3)
 }
 
 // gridlines in y axis function
 function make_y_gridlines(y) {
     return d3.axisLeft(y)
-        .ticks(20)
+        .ticks(10)
 }

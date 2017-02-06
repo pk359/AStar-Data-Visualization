@@ -101,3 +101,6 @@ circle.circle:hover {
 .grid path {
     stroke-width: 0;
 }
+.graph-info{
+    display: none;
+}
