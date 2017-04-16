@@ -24,53 +24,61 @@ input[type=number]::-webkit-outer-spin-button {
     margin: 0;
 }
 
-.fa-bars {
-    margin: 20px;
-}
-
 .fa-bars:hover {
     cursor: pointer;
 }
 
 .input-forms,
 .result-div {
-    padding: 4px;
-    /*min-height: 530px;*/
-    margin-top: 30px;
     background: rgba(206, 206, 206, 0.34);
 }
 
 #menu-content,
+#help-content {
+    position: absolute;
+    top: 34px;
+    bottom: 0px;
+     width: 40%;
+}
+
 .main-body {
     position: absolute;
-    top: 82px;
+    top: 100px;
     bottom: 0px;
 }
 
 #menu-content {
-    /*position: relative;*/
-    padding-top: 20px;
-    /*top: 0px;*/
     height: auto;
-    width: 200px;
     list-style: none;
     text-align: left;
-    padding: 2px;
     color: white;
     font-size: 20px;
-    z-index:10;
+    z-index: 10;
     background: #9E9E9E;
-    
 }
-#menu-content li:hover{
+
+#menu-content li:hover {
     cursor: pointer;
-    text-decoration: underline;
+    color:greenyellow;
+}
+
+#help-content {
+    position: absolute;
+    right: 0;
+    height: auto;
+    text-align: left;
+    color: white;
+    font-size: 14px;
+    z-index: 10;
+    background: #9E9E9E;
 }
 
 .main-body {
     left: 0;
     right: 0;
 }
+
+
 /*Relavant to D3 graph*/
 
 .d3-tip {
@@ -82,10 +90,6 @@ input[type=number]::-webkit-outer-spin-button {
     width: 110px;
     height: auto;
     word-wrap: break-word;
-}
-
-circle.circle {
-    fill: red;
 }
 
 circle.circle:hover {
@@ -101,6 +105,44 @@ circle.circle:hover {
 .grid path {
     stroke-width: 0;
 }
-.graph-info{
+
+.graph-info {
     display: none;
+}
+
+/*.data-table {
+    overflow: auto;
+}*/
+
+.highlight-data {
+    background: yellow;
+    fill: lightgreen;
+    r: 5;
+}
+
+[class^="data"] {
+    border-top: 1px solid black;
+}
+
+@media screen and (max-width: 767px) {
+    .data-table {
+        margin-top: 50px;
+    }
+}
+
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: lightsteelblue;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+thead, tbody{
+    display: block;
+}
+tbody{
+    overflow: scroll;
 }

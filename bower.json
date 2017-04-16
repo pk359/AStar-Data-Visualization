@@ -1,0 +1,24 @@
+{
+  "name": "BindingItAll",
+  "homepage": "https://github.com/pk359/BindingItAll",
+  "authors": [
+    "Prem Kumar <siwbay@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "bootstrap": "^3.3.7",
+    "jquery-ui": "^1.12.1",
+    "chart.js": "^2.5.0",
+    "font-awesome": "^4.7.0"
+  }
+}

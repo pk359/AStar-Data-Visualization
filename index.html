@@ -5,75 +5,266 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASTAR</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <!--<link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">-->
+    <!--<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">-->
+
+    <!--<link rel="stylesheet" href="css/style.css">-->
+    <!--<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
     <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <script src="js/bootstrap.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>-->
+    <!--<script src="js/bootstrap.min.js"></script>-->
+
+
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="bower_components/jquery-ui/themes/base/jquery-ui.min.css">
+    <link rel="stylesheet" href="css/style.css">
+
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/chart.js/dist/Chart.min.js"></script>
+
     <script src="js/d3js.js"></script>
-    <script src="js/d3tip.js"></script>
+    <script src="js/gmdata.js"></script>
+    <script src="js/cbpma.js"></script>
+    <script src="js/cbpmc.js"></script>
+    <script src="js/cbpa.js"></script>
+    <script src="js/cbpc.js"></script>
+    <script src="js/cspa.js"></script>
+    <script src="js/pmt.js"></script>
+    <script src="js/sa.js"></script>
 </head>
-<nav class="nav main-nav">
-    <i class="fa fa-bars fa-3x toggle-btn"></i>
-</nav>
-<ul id="menu-content" class="menu-content">
-    <li id='wp2c01-menu'>
-        <i class="fa fa-map-o fa-lg"></i> WP2-C1
-    </li>
-    <li id='wp2c02-menu'>
-        <i class="fa fa-bar-chart fa-lg"></i> WP2-C2
-    </li>
-</ul>
-<div class="row main-body">
-    <h3 id="formName-header">WP2C 01</h3>
-    <div class="col-sm-4 input-forms">
-        <!--WP2c01 form-->
-        <form id="wp2c01-form" onsubmit="return false;">
-            <div class="form-group">
-                <label for="start_date-wp2c01" class="col-2 col-form-label">Start Date</label>
-                <input class="form-control start_date" type="text" id="start_date-wp2c01" required>
-            </div>
-            <div class="form-group">
-                <label for="end_date-wp2c01" class="col-2 col-form-label">End Date</label>
-                <input class="form-control end_date" type="text" id="end_date-wp2c01" required>
-            </div>
-            <div class="form-group">
-                <label for="option-wp2c01" class="col-2 col-form-label">Option</label>
-                <input class="form-control" type="text" id="option-wp2c01" value="1" required>
-                <!--<select id="option-wp2c01" class="form-control">
+
+<body>
+    <nav class="nav main-nav">
+        <span class="btn btn-default" id="menu-button">MENU</span>
+        <!--<button class="btn btn-default">Menu</button>-->
+        <span class="btn btn-default pull-right" id="menu-question">Need Help?</span>
+    </nav>
+    <ul id="menu-content" class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+        <li data-toggle="collapse" data-target="#components" class="active">
+            Component <i class="fa fa-caret-right" aria-hidden="true"></i>
+        </li>
+        <ul class="sub-menu active collapse in" id="components">
+            <li class="active" id='componentScatterPlotAll-menuitem'>
+                Scatter Plot All
+            </li>
+            <li id='componentBarPlotCm-menuitem'>
+                Bar Plot Cm
+            </li>
+            <li id='componentBarPlotAll-menuitem'>
+                Bar Plot All
+            </li>
+            <li id='componentBarPlotCritical-menuitem'>
+                Bar Plot Critical
+            </li>
+            <li id='componentBarPlotMttfAll-menuitem'>
+                Bar Plot Mttf All
+            </li>
+            <li id='componentBarPlotMttfCritical-menuitem'>
+                Bar Plot Mttf Critical
+            </li>
+        </ul>
+        <li data-toggle="collapse" data-target="#general" class="collapsed active">
+            General <i class="fa fa-caret-right" aria-hidden="true"></i>
+        </li>
+        <ul class="sub-menu collapse" id="general">
+            <li id='generalScatterPlotMileage-menuitem'>
+                Scatter Plot Mileage
+            </li>
+        </ul>
+        <li data-toggle="collapse" data-target="#pm" class="collapsed active">
+            PM <i class="fa fa-caret-right" aria-hidden="true"></i>
+        </li>
+        <ul class="sub-menu collapse" id="pm">
+            <li id='pmTracking-menuitem'>
+                Tracking
+            </li>
+            <li id='survivalAnalysis-menuitem'>
+                Survival Analysis
+            </li>
+        </ul>
+    </ul>
+    <div class="row text-center"><span id="formName-header" style="    font-size: 32px;
+    color: #777777;">component-scatter-plot-all </span></div>
+
+    <div class="row main-body">
+        <div class="col-sm-2 input-forms">
+            <!--componentScatterPlotAll form-->
+            <form id="componentScatterPlotAll-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="start_date-componentScatterPlotAll" class="col-2 col-form-label">Start Date</label>
+                    <input class="form-control start_date" type="text" id="start_date-componentScatterPlotAll" value="2013-04-21" required>
+                </div>
+                <div class="form-group">
+                    <label for="end_date-componentScatterPlotAll" class="col-2 col-form-label">End Date</label>
+                    <input class="form-control end_date" type="text" id="end_date-componentScatterPlotAll" value="2014-12-02" required>
+                </div>
+                <div class="form-group">
+                    <label for="option-componentScatterPlotAll" class="col-2 col-form-label">Option</label>
+                    <input class="form-control" type="text" id="option-componentScatterPlotAll" value="1" required>
+                    <!--<select id="option-componentScatterPlotAll" class="form-control">
                     <option value="1">Quantity</option>
                 </select>-->
-            </div>
-            <input type="submit" class="btn btn-default" value="Submit" />
-        </form>
-        <!--WP2c02 form-->
-        <form id="wp2c02-form" onsubmit="return false;">
-            <div class="form-group">
-                <label for="start_date-wp2c02" class="col-2 col-form-label">Start Date</label>
-                <input class="form-control start_date" type="text" id="start_date-wp2c02" required>
-            </div>
-            <div class="form-group">
-                <label for="end_date-wp2c02" class="col-2 col-form-label">End Date</label>
-                <input class="form-control end_date" type="text" id="end_date-wp2c02" required>
-            </div>
-            <div class="form-group">
-                <label for="option-wp2c02" class="col-2 col-form-label">Option</label>
-                <select id="option-wp2c02" class="form-control">
+                </div>
+                <input type="submit" class="btn btn-default" value="Submit" />
+            </form>
+            <!--componentBarPlotCm form-->
+            <form id="componentBarPlotCm-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="start_date-componentBarPlotCm" class="col-2 col-form-label">Start Date</label>
+                    <input class="form-control start_date" type="text" id="start_date-componentBarPlotCm" value="2013-04-21" required>
+                </div>
+                <div class="form-group">
+                    <label for="end_date-componentBarPlotCm" class="col-2 col-form-label">End Date</label>
+                    <input class="form-control end_date" type="text" id="end_date-componentBarPlotCm" value="2014-12-02" required>
+                </div>
+                <div class="form-group">
+                    <label for="option-componentBarPlotCm" class="col-2 col-form-label">Option</label>
+                    <select id="option-componentBarPlotCm" class="form-control">
                     <option value="1" selected="true">Quantity</option>
                     <option value="2">Cost</option>
                 </select>
-            </div>
-            <div class="form-group">
-                <label for="count-wp2c02" class="col-2 col-form-label">Count</label>
-                <input class="form-control" type="number" value="20" id="count-wp2c02" min=1 required>
-            </div>
-            <input type="submit" class="btn btn-default" value="Submit" />
-        </form>
+                </div>
+                <div class="form-group">
+                    <label for="count-componentBarPlotCm" class="col-2 col-form-label">Number of Material</label>
+                    <input class="form-control" type="number" value="20" id="count-componentBarPlotCm" min=1 required>
+                </div>
+                <input type="submit" class="btn btn-default" value="Submit" />
+            </form>
+            <form id="generalScatterPlotMileage-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="start_date-generalScatterPlotMileage" class="col-2 col-form-label">Start Date</label>
+                    <input class="form-control start_date" type="text" id="start_date-generalScatterPlotMileage" value="2013-04-21" required>
+                </div>
+                <div class="form-group">
+                    <label for="end_date-generalScatterPlotMileage" class="col-2 col-form-label">End Date</label>
+                    <input class="form-control end_date" type="text" id="end_date-generalScatterPlotMileage" value="2014-12-02" required>
+                </div>
+                <input type="submit" class="btn btn-default" value="Submit" />
+            </form>
+
+            <form id="componentBarPlotMttfCritical-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="option-componentBarPlotMttfCritical" class="col-2 col-form-label">Option</label>
+                    <select id="option-componentBarPlotMttfCritical" class="form-control">
+                    <option value="1" selected="true">MeanTimeToFailure</option>
+                    <option value="2">MeanMileageToFailure</option>
+                </select>
+                </div>
+                <div class="form-group">
+                    <label for="count-componentBarPlotMttfCritical" class="col-2 col-form-label">No of Material</label>
+                    <input class="form-control" type="number" value="5" id="count-componentBarPlotMttfCritical" min=1 required>
+                </div>
+                <input type="submit" class="btn btn-default" value="Submit" />
+            </form>
+
+            <form id="componentBarPlotMttfAll-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="option-componentBarPlotMttfAll" class="col-2 col-form-label">Option</label>
+                    <select id="option-componentBarPlotMttfAll" class="form-control">
+                   <option value="1" selected="true">MeanTimeToFailure</option>
+                    <option value="2">MeanMileageToFailure</option>
+                </select>
+                </div>
+                <div class="form-group">
+                    <label for="count-componentBarPlotMttfAll" class="col-2 col-form-label">No of Material</label>
+                    <input class="form-control" type="number" value="5" id="count-componentBarPlotMttfAll" min=1 required>
+                </div>
+                <input type="submit" class="btn btn-default" value="Submit" />
+            </form>
+            <form id="componentBarPlotAll-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="start_date-componentBarPlotAll" class="col-2 col-form-label">Start Date</label>
+                    <input class="form-control start_date" type="text" id="start_date-componentBarPlotAll" value="2013-04-21" required>
+                </div>
+                <div class="form-group">
+                    <label for="end_date-componentBarPlotAll" class="col-2 col-form-label">End Date</label>
+                    <input class="form-control end_date" type="text" id="end_date-componentBarPlotAll" value="2014-12-02" required>
+                </div>
+                <div class="form-group">
+                    <label for="option-componentBarPlotAll" class="col-2 col-form-label">Option</label>
+                    <select id="option-componentBarPlotAll" class="form-control">
+                    <option value="1" selected="true">Quantity</option>
+                    <option value="2">Cost</option>
+                </select>
+                </div>
+                <div class="form-group">
+                    <label for="count-componentBarPlotAll" class="col-2 col-form-label">Number of Material</label>
+                    <input class="form-control" type="number" value="20" id="count-componentBarPlotAll" min=1 required>
+                </div>
+                <input type="submit" class="btn btn-default" value="Submit" />
+            </form>
+            <form id="componentBarPlotCritical-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="start_date-componentBarPlotCritical" class="col-2 col-form-label">Start Date</label>
+                    <input class="form-control start_date" type="text" id="start_date-componentBarPlotCritical" value="2013-04-21" required>
+                </div>
+                <div class="form-group">
+                    <label for="end_date-componentBarPlotCritical" class="col-2 col-form-label">End Date</label>
+                    <input class="form-control end_date" type="text" id="end_date-componentBarPlotCritical" value="2014-12-02" required>
+                </div>
+                <div class="form-group">
+                    <label for="option-componentBarPlotCritical" class="col-2 col-form-label">Option</label>
+                    <select id="option-componentBarPlotCritical" class="form-control">
+                    <option value="1" selected="true">Quantity</option>
+                    <option value="2">Cost</option>
+                </select>
+                </div>
+                <div class="form-group">
+                    <label for="count-componentBarPlotCritical" class="col-2 col-form-label">No of Material</label>
+                    <input class="form-control" type="number" value="20" id="count-componentBarPlotCritical" min=1 required>
+                </div>
+                <input type="submit" class="btn btn-default" value="Submit" />
+            </form>
+            <form id="pmTracking-form" onsubmit="return false;">
+
+                <div class="form-group">
+                    <label for="registrationYear-pmTracking" class="col-2 col-form-label">Registration Year</label>
+                    <select id="registrationYear-pmTracking" class="form-control">
+                        <option value="2013" selected="true">2013</option>
+                        <option value="2014" >2014</option>
+                        <option value="2015" >2015</option>
+                        <option value="2016">2016</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dailyMileageCategory-pmTracking" class="col-2 col-form-label">Daily Mileage Category</label>
+                    <select id="dailyMileageCategory-pmTracking" class="form-control">
+                        <option value="1" selected="true">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+                <input type="submit" class="btn btn-default" value="Submit" />
+            </form>
+        </div>
+        <div style="outline: 1px solid black;" class="col-sm-6 result-div"></div>
+        <div class="col-sm-4 data-table" style="font-size: 11px; padding: 0;">
+            <table class="table table-responsive">
+                <thead id="data-table-thead">
+
+                </thead>
+                <tbody id="data-table-tbody">
+
+                </tbody>
+            </table>
+        </div>
     </div>
-    <div class="col-sm-1"></div>
-    <div class="col-sm-7 result-div">
+    <div id="help-content">
+        Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello
+        this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is help.
+        Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is
+        help. Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello this
+        is help. Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello
+        this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is help.
+        Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is
+        help. Hello this is help. Hello this is help. Hello this is help. Hello this is help.
     </div>
-</div>
-<script src="js/script.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>
