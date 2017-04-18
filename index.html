@@ -241,6 +241,23 @@
                 </div>
                 <input type="submit" class="btn btn-default" value="Submit" />
             </form>
+            <form id="survivalAnalysis-form" onsubmit="return false;">
+
+                <div class="form-group">
+                    <label for="materialNumber-survivalAnalysis" class="col-2 col-form-label">Material Number</label>
+                    <input class="form-control" type="number" value="6506129" id="materialNumber-survivalAnalysis" min=1 required>
+                </div>
+                <div class="form-group">
+                    <label for="category-survivalAnalysis" class="col-2 col-form-label">Category</label>
+                    <select id="category-survivalAnalysis" class="form-control">
+                        <option value="All" selected="true">All</option>
+                        <option value="Batch">Batch</option>
+                        <option value="Daily">Daily Mileage</option>
+                        <option value="PM">PM Adherence</option>
+                    </select>
+                </div>
+                <input type="submit" class="btn btn-default" value="Submit" />
+            </form>
         </div>
         <div style="outline: 1px solid black;" class="col-sm-6 result-div"></div>
         <div class="col-sm-4 data-table" style="font-size: 11px; padding: 0;">

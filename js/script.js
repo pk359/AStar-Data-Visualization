@@ -505,7 +505,7 @@ function generalScatterPlotMileage(fields) {
             var className = $(this).attr('class');
             removeHighlight(className.split(" ")[1]);
         })
-    $('.result-div').append(`<h5 style="text-align:center">Sorted on <span style="font-size: 16px; color:red">MeanMileage</span> in <strong>ascending order</strong></h5>`);
+    // $('.result-div').append(`<h5 style="text-align:center">Sorted on <span style="font-size: 16px; color:red">MeanMileage</span> in <strong>ascending order</strong></h5>`);
 
     $('[class^=data]').on('mouseover', function () {
         var className = $(this).attr('class');
@@ -1200,15 +1200,12 @@ function pmTracking(fields) {
     //         if (data.length <= 0) {
     //             alert("No data available")
     //         } else {
-    $('.result-div').height(window.innerHeight);
-    $('.result-div').append(`<svg height="${window.innerHeight}" width="${$('.result-div').width()}"></svg>`);
+    $('.result-div').height($('.result-div').height());
+    $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
     $('#data-table-tbody').height($('.result-div').height());
     //$('#data-table-tbody').width($('.data-table').width()-29);
 
     var data = pmt;
-    var headers = data[0];
-    var str = "<tr><th>#</th>";
-
     //Create array
     var records = pmTrackingHelperCreateArray(data);
 
@@ -1325,12 +1322,37 @@ function pmTracking(fields) {
             return color(i);
         });
 
-
+    var countOfDots = 0;
+    $("#data-table-thead").append(`
+        <th>#</th>
+       <th>JobIndex</th>
+        <th>Mileage</th>
+         <th>VehNum</th>
+        <th>VehID</th>
+        `)
+    var tbody = ``;
     records.forEach(function (d, key) {
         var vehNum = d.VehNum;
+        var vehID = d.VehID;
+        //Add data to table
+
+        d.values.forEach(function (k, i) {
+            $("#data-table-tbody").append(`<tr class='data${i + countOfDots}'>
+                <td>${i + countOfDots +1}</td>
+                 <td>${k.Job_Index}</td>
+                <td>${k.Acc_Mileage}</td>
+                <td>${vehNum}</td>
+                <td>${vehID}</td>
+            </tr>`);
+
+        })
+        //Create dots
         g.selectAll('.circle')
             .data(d.values)
             .enter().append('circle')
+            .attr('class', function (k, i) {
+                return "data" + (i + countOfDots);
+            })
             .attr('style', 'cursor:pointer')
             .attr('fill', getRandomColor())
             .attr('cx', function (pair) {
@@ -1350,45 +1372,60 @@ function pmTracking(fields) {
                         <strong>JobIndex:</strong> <span style='color:red'>${d.Job_Index}</span>`)
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY - 28) + "px")
+
+                var className = $(this).attr('class');
+                highlightData(className.split(" ")[1]);
+                $(`#data-table-tbody tr.${className}`)[0].scrollIntoView();
             })
             .on('mouseout', function () {
                 div.transition()
                     .duration(500)
                     .style("opacity", 0);
+                var className = $(this).attr('class');
+                removeHighlight(className.split(" ")[1]);
             });
+        countOfDots += d.values.length;
 
-        g.append('rect')
-            .attr("class", "bar")
-            .attr("x", width - 70)
-            .attr("y", height - 20 - key * 10)
-            .attr('fill', color(key))
-            .attr("width", '20px')
-            .attr("height", '9px')
-            .attr("id", 'text_id'+key)
+        // var bar = g.append('rect')
+        //     .attr("class", "bar")
+        //     .attr("x", width - 70)
+        //     .attr("y", height - 20 - key * 10)
+        //     .attr('fill', color(key))
+        //     .attr("width", '20px')
+        //     .attr("height", '9px')
+        //     .attr("id", 'text_id' + key)
 
-            .on("mouseover", function () {
-                for (j = 0; j < maxJobIndex; j++) {
-                    if (key !== j) {
-                        d3.select("#id" + key).style("opacity", 0.1);
-                        d3.select("#text_id" + key).style("opacity", 0.2);
-                    }
-                };
-            })
-            .on("mouseout", function () {
-                for (j = 0; j < maxJobIndex; j++) {
-                    d3.select("#id" + j).style("opacity", 1);
-                    d3.select("#text_id" + j).style("opacity", 1);
-                };
-            })
-            .append('text')
-            .attr("x", width - 49)
-            .attr("y", height - 20 - key * 10)
-            .attr("dy", ".35em")
-            .attr('fill', '#000')
-            .style('font-size', '12px')
-            .text(d.VehNum)
-
+        //     .on("mouseover", function () {
+        //         for (j = 0; j < maxJobIndex; j++) {
+        //             if (key !== j) {
+        //                 d3.select("#id" + key).style("opacity", 0.1);
+        //                 d3.select("#text_id" + key).style("opacity", 0.2);
+        //             }
+        //         };
+        //     })
+        //     .on("mouseout", function () {
+        //         for (j = 0; j < maxJobIndex; j++) {
+        //             d3.select("#id" + j).style("opacity", 1);
+        //             d3.select("#text_id" + j).style("opacity", 1);
+        //         };
+        //     })
+        // bar.append('text')
+        //     .attr("x", width - 49)
+        //     .attr("y", height - 20 - key * 10)
+        //     .attr("dy", ".35em")
+        //     .attr('fill', '#000')
+        //     .style('font-size', '12px')
+        //     .text(d.VehNum)
     })
+    $('[class^=data]').on('mouseover', function () {
+        var className = $(this).attr('class');
+        highlightData(className.split(" "));
+    })
+    $('[class^=data]').on('mouseout', function () {
+        var className = $(this).attr('class');
+        removeHighlight(className.split(" ")[0]);
+    })
+    console.log(records);
 
 
     //     }
@@ -1396,22 +1433,10 @@ function pmTracking(fields) {
 
 }
 
-
-
-// Returns path data for a rectangle with rounded right corners.
-// Note: it’s probably easier to use a <rect> element with rx and ry attributes!
-// The top-left corner is ⟨x,y⟩.
-function rightRoundedRect(x, y, width, height, radius) {
-    return "M" + x + "," + y +
-        "h" + (width - radius) +
-        "a" + radius + "," + radius + " 0 0 1 " + radius + "," + radius +
-        "v" + (height - 2 * radius) +
-        "a" + radius + "," + radius + " 0 0 1 " + -radius + "," + radius +
-        "h" + (radius - width) +
-        "z";
+function survivalAnalysis(fields) {
+    console.log(fields)
 }
 
-//
 function pmTrackingHelperCreateArray(data) {
 
     var newData = []
@@ -1428,6 +1453,7 @@ function pmTrackingHelperCreateArray(data) {
             })
         })
         newData.push({
+            VehID: d.VehID,
             VehNum: d.VehNum,
             values: pair
         })
