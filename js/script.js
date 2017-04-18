@@ -1443,7 +1443,14 @@ function survivalAnalysis(fields) {
 
     $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
     $('#data-table-tbody').height($('.result-div').height());
-    var data = sa;
+    var data = saAll;
+
+    if (fields[1] === 'All') {
+        var pathsJSON = survivalAnalysisHelperAll(data);
+        console.log(pathsJSON);
+    } else {
+        survivalAnalysisHelperNotAll()
+    }
 
     var headers = data[0];
 
@@ -1451,6 +1458,7 @@ function survivalAnalysis(fields) {
     Object.keys(headers).forEach(function (k) {
         str += "<th>" + k + "</th>";
     })
+
     $("#data-table-thead").append(str + "</tr>");
 
     data = data.sort(function (a, b) {
@@ -1552,6 +1560,29 @@ function pmTrackingHelperCreateArray(data) {
 
     })
     return newData;
+}
+
+//Create new array of points for Survival Analysis
+function survivalAnalysisHelperAll(data) {
+    var pathsJSON = {}
+
+    pathsJSON.AVLC = []
+    pathsJSON.AVLCLower = []
+    pathsJSON.AVLCUpper = []
+
+    data.forEach(function (d) {
+        if (Object.keys(d).length == 2) {
+            pathsJSON.AVLC.push({ x: d["All vehicle, all cause"], y: d["timeline"] });
+            pathsJSON.AVLCLower.push({ x: d["All vehicle, all cause"], y: d["timeline"] });
+            pathsJSON.AVLCUpper.push({ x: d["All vehicle, all cause"], y: d["timeline"] });
+        } else {
+            pathsJSON.AVLC.push({ x: d["All vehicle, all cause"], y: d["timeline"] });
+            pathsJSON.AVLCLower.push({ x: d[`All vehicle, all cause_lower_0.95`], y: d["timeline"] });
+            pathsJSON.AVLCUpper.push({ x: d[`All vehicle, all cause_upper_0.95`], y: d["timeline"] });
+        }
+    })
+    return pathsJSON;
+
 }
 //Get random color
 function getRandomColor() {
