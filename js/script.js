@@ -92,7 +92,7 @@ function componentScatterPlotAll(fields) {
     });
     data.forEach(function (d, i) {
         d[option] = +d[option];
-        str = `<tr class='data${i}'><td>${i+1}</td>`
+        str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
             str += "<td>" + d[k] + "</td>";
         })
@@ -184,7 +184,7 @@ function componentScatterPlotAll(fields) {
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
-            div.html(`<strong>#:</strong><span style='color:blue'>${i+1}</span><br>
+            div.html(`<strong>#:</strong><span style='color:blue'>${i + 1}</span><br>
                         <strong>${option}:</strong> <span style='color:red'>${d[option]}</span><br>
                         <strong>Material:</strong> <span style='color:red'>${d['MaterialNo']}</span>`)
                 .style("left", (d3.event.pageX) + "px")
@@ -240,7 +240,7 @@ function componentBarPlotCm(fields) {
     });
     data.forEach(function (d, i) {
         d[option] = +d[option];
-        str = `<tr class='data${i}'><td>${i+1}</td>`
+        str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
             str += "<td>" + d[k] + "</td>";
         })
@@ -351,7 +351,7 @@ function componentBarPlotCm(fields) {
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
-            div.html(`<strong>#</strong><span style='color:yellow'>${i+1}</span><br>
+            div.html(`<strong>#</strong><span style='color:yellow'>${i + 1}</span><br>
                         <strong>${option}:</strong> <span style='color:red'>${d[option]}</span><br>
                         <strong>Material:</strong> <span style='color:red'>${d['MaterialNo']}</span>`)
                 .style("left", (d3.event.pageX) + "px")
@@ -405,7 +405,7 @@ function generalScatterPlotMileage(fields) {
     // });
     data.forEach(function (d, i) {
         d['MeanMileage'] = +d['MeanMileage'];
-        str = `<tr class='data${i}'><td>${i+1}</td>`
+        str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
             str += "<td>" + d[k] + "</td>";
         })
@@ -487,7 +487,7 @@ function generalScatterPlotMileage(fields) {
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
-            div.html(`<strong>#:</strong><span style='color:blue'>${i+1}</span><br>
+            div.html(`<strong>#:</strong><span style='color:blue'>${i + 1}</span><br>
                         <strong>MeanMileage</strong> <span style='color:red'>${d['MeanMileage']}</span><br>
                         <strong>Material:</strong> <span style='color:red'>${d['VehID']}</span>`)
                 .style("left", (d3.event.pageX) + "px")
@@ -542,7 +542,7 @@ function componentBarPlotMttfAll(fields) {
     });
     data.forEach(function (d, i) {
         d['MTTF'] = +d['MTTF'];
-        str = `<tr class='data${i}'><td>${i+1}</td>`
+        str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
             str += "<td>" + d[k] + "</td>";
         })
@@ -653,7 +653,7 @@ function componentBarPlotMttfAll(fields) {
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
-            div.html(`<strong>#</strong><span style='color:yellow'>${i+1}</span><br>
+            div.html(`<strong>#</strong><span style='color:yellow'>${i + 1}</span><br>
                         <strong>${'MTTF'}:</strong> <span style='color:red'>${d['MTTF']}</span><br>
                         <strong>Material:</strong> <span style='color:red'>${d['MaterialNo']}</span>`)
                 .style("left", (d3.event.pageX) + "px")
@@ -710,7 +710,7 @@ function componentBarPlotMttfCritical(fields) {
     });
     data.forEach(function (d, i) {
         d['MTTF'] = +d['MTTF'];
-        str = `<tr class='data${i}'><td>${i+1}</td>`
+        str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
             str += "<td>" + d[k] + "</td>";
         })
@@ -820,7 +820,7 @@ function componentBarPlotMttfCritical(fields) {
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
-            div.html(`<strong>#</strong><span style='color:yellow'>${i+1}</span><br>
+            div.html(`<strong>#</strong><span style='color:yellow'>${i + 1}</span><br>
                         <strong>${'MTTF'}:</strong> <span style='color:red'>${d['MTTF']}</span><br>
                         <strong>Material:</strong> <span style='color:red'>${d['MaterialNo']}</span>`)
                 .style("left", (d3.event.pageX) + "px")
@@ -879,7 +879,7 @@ function componentBarPlotAll(fields) {
     });
     data.forEach(function (d, i) {
         d[option] = +d[option];
-        str = `<tr class='data${i}'><td>${i+1}</td>`
+        str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
             str += "<td>" + d[k] + "</td>";
         })
@@ -990,7 +990,7 @@ function componentBarPlotAll(fields) {
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
-            div.html(`<strong>#</strong><span style='color:yellow'>${i+1}</span><br>
+            div.html(`<strong>#</strong><span style='color:yellow'>${i + 1}</span><br>
                         <strong>${option}:</strong> <span style='color:red'>${d[option]}</span><br>
                         <strong>Material:</strong> <span style='color:red'>${d['MaterialNo']}</span>`)
                 .style("left", (d3.event.pageX) + "px")
@@ -1047,7 +1047,7 @@ function componentBarPlotCritical(fields) {
     });
     data.forEach(function (d, i) {
         d[option] = +d[option];
-        str = `<tr class='data${i}'><td>${i+1}</td>`
+        str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
             str += "<td>" + d[k] + "</td>";
         })
@@ -1159,7 +1159,7 @@ function componentBarPlotCritical(fields) {
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
-            div.html(`<strong>#</strong><span style='color:yellow'>${i+1}</span><br>
+            div.html(`<strong>#</strong><span style='color:yellow'>${i + 1}</span><br>
                         <strong>${option}:</strong> <span style='color:red'>${d[option]}</span><br>
                         <strong>Material:</strong> <span style='color:red'>${d['MaterialNo']}</span>`)
                 .style("left", (d3.event.pageX) + "px")
@@ -1338,7 +1338,7 @@ function pmTracking(fields) {
 
         d.values.forEach(function (k, i) {
             $("#data-table-tbody").append(`<tr class='data${i + countOfDots}'>
-                <td>${i + countOfDots +1}</td>
+                <td>${i + countOfDots + 1}</td>
                  <td>${k.Job_Index}</td>
                 <td>${k.Acc_Mileage}</td>
                 <td>${vehNum}</td>
@@ -1434,7 +1434,99 @@ function pmTracking(fields) {
 }
 
 function survivalAnalysis(fields) {
-    console.log(fields)
+    // var url = `http://10.217.163.77:8080/api/component-bar-plot-critical?start-date=${fields[0]}&end-date=${fields[1]}&option=${fields[2]}&no-of-rows=${fields[3]}`;
+    // $.getJSON(url)
+    //     .done(function (data) {
+    //         if (data.length <= 0) {
+    //             alert("No data available")
+    //         } else {
+
+    $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
+    $('#data-table-tbody').height($('.result-div').height());
+    var data = sa;
+
+    var headers = data[0];
+
+    var str = "<tr><th>#</th>";
+    Object.keys(headers).forEach(function (k) {
+        str += "<th>" + k + "</th>";
+    })
+    $("#data-table-thead").append(str + "</tr>");
+
+    data = data.sort(function (a, b) {
+        return a['MTTF'] - b['MTTF'];
+    });
+    data.forEach(function (d, i) {
+        d['MTTF'] = +d['MTTF'];
+        str = `<tr class='data${i}'><td>${i + 1}</td>`
+        Object.keys(d).forEach(function (k, i) {
+            str += "<td>" + d[k] + "</td>";
+        })
+        $("#data-table-tbody").append(str + "</tr>");
+    });
+
+
+    var svg = d3.select("svg"),
+        margin = {
+            top: 20,
+            right: 20,
+            bottom: 60,
+            left: 50
+        },
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom;
+
+
+    var x = d3.scaleBand().rangeRound([0, width]).padding(.1);
+    //y = d3.scaleLinear().rangeRound([height, 0]);
+
+    var y = d3.scaleLinear()
+        .rangeRound([height, 0]);
+
+    x.domain(data.map(function (d, i) {
+        return d['MaterialNo'];
+    }));
+
+    y.domain([0.1, d3.max(data, function (d) {
+        return d['MTTF'];
+    })]);
+
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    var g = svg.append("g")
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+    var xaxis = g.append('g')
+        .attr('class', 'axis axis--x')
+        .style('font-size', '8px')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(d3.axisBottom(x));
+
+    xaxis.selectAll("text")
+        .attr('x', '-8')
+        .attr("transform", "rotate(-60)")
+        .attr('text-anchor', 'end')
+    // .attr('dy', '.35em')
+
+
+    xaxis.append('text')
+        .attr('fill', '#000')
+        .attr('transform', 'translate(' + width / 2 + ',' + margin.bottom + ')')
+        .text('Material Number');
+
+    //For Y axis
+    g.append('g')
+        .attr('class', 'axis axis--y')
+        .call(d3.axisLeft(y))
+        .append("text")
+        .attr('transform', 'translate(-' + margin.left + ',' + height / 2 + ')rotate(-90)')
+        .attr('dy', '0.71em')
+        .attr('fill', '#000')
+        .text('MTTF');
+    // }
+    // });
 }
 
 function pmTrackingHelperCreateArray(data) {
