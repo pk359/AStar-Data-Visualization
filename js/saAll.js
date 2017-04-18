@@ -1,4 +1,4 @@
-var sa = [
+var saAll = [
   {
     "All vehicle, all cause": "1.0",
     "timeline": "0.0"
