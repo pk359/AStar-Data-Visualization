@@ -1443,16 +1443,17 @@ function survivalAnalysis(fields) {
 
     $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
     $('#data-table-tbody').height($('.result-div').height());
-    var data = saAll;
-
+    var data = fields[1] === 'All' ? saAll : saBatch;
+    var records = []
     if (fields[1] === 'All') {
-        var pathsJSON = survivalAnalysisHelperAll(data);
-        console.log(pathsJSON);
+        records = survivalAnalysisHelperAll(data);
+
     } else {
-        survivalAnalysisHelperNotAll()
+        records = survivalAnalysisHelperNotAll(data)
+
     }
 
-    var headers = data[0];
+    var headers = records[0];
 
     var str = "<tr><th>#</th>";
     Object.keys(headers).forEach(function (k) {
@@ -1461,78 +1462,165 @@ function survivalAnalysis(fields) {
 
     $("#data-table-thead").append(str + "</tr>");
 
-    data = data.sort(function (a, b) {
-        return a['MTTF'] - b['MTTF'];
-    });
-    data.forEach(function (d, i) {
-        d['MTTF'] = +d['MTTF'];
-        str = `<tr class='data${i}'><td>${i + 1}</td>`
-        Object.keys(d).forEach(function (k, i) {
-            str += "<td>" + d[k] + "</td>";
-        })
-        $("#data-table-tbody").append(str + "</tr>");
-    });
+    records.forEach(function (d, i) {
 
+        d.values.sort(function (a, b) {
+            return a.x - b.x;
+        })
+        str = `<tr class='data${i}'><td>${i + 1}</td><td>`
+        d.values.forEach(function (c, k) {
+            str += '<span>name: ' + d.name + ' timeline: ' + c.x + '</span><br>';
+        })
+        // Object.keys(d).forEach(function (k, i) {
+
+        // })
+        $("#data-table-tbody").append(str + "</td></tr>");
+    });
 
     var svg = d3.select("svg"),
         margin = {
             top: 20,
             right: 20,
-            bottom: 60,
-            left: 50
+            bottom: 50,
+            left: 40
         },
         width = +svg.attr("width") - margin.left - margin.right,
         height = +svg.attr("height") - margin.top - margin.bottom;
 
+    var x = d3.scaleLinear().rangeRound([0, width]);
+    var y = d3.scaleLinear().rangeRound([height, 0]);
 
-    var x = d3.scaleBand().rangeRound([0, width]).padding(.1);
-    //y = d3.scaleLinear().rangeRound([height, 0]);
+    var color = d3.scaleLinear().domain([0, records.length])
+        .interpolate(d3.interpolateHcl)
+        .range([d3.rgb("#007AFF"), d3.rgb('#FFF500')]);
 
-    var y = d3.scaleLinear()
-        .rangeRound([height, 0]);
+    var maxY = d3.max(records, function (c) {
+        return d3.max(c.values, function (v) {
+            return v.y;
+        });
+    });
+    var maxX = d3.max(records, function (c) {
+        return d3.max(c.values, function (v) {
+            return v.x;
+        });
+    });
 
-    x.domain(data.map(function (d, i) {
-        return d['MaterialNo'];
-    }));
+    x.domain([
+        d3.min(records, function (c) {
+            return d3.min(c.values, function (v) {
+                return v.x;
+            });
+        }),
+        maxX
+    ]);
 
-    y.domain([0.1, d3.max(data, function (d) {
-        return d['MTTF'];
-    })]);
+
+    y.domain([
+        0,
+        // d3.min(stocks, function(c) { return d3.min(c.values, function(v) { return v.close; }); }),
+        maxY
+    ]);
 
     var div = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
 
+
+    // set the line attributes
+    var line = d3.line()
+        .x(function (d) {
+            return x(d.x);
+        })
+        .y(function (d) {
+            return y(d.y);
+        })
+
+
     var g = svg.append("g")
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-    var xaxis = g.append('g')
-        .attr('class', 'axis axis--x')
-        .style('font-size', '8px')
-        .attr('transform', 'translate(0,' + height + ')')
-        .call(d3.axisBottom(x));
 
+    // add the x axis
+    var xaxis = g.append("g")
+        .attr("class", "x axis")
+        .style('font-size', '8px')
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
     xaxis.selectAll("text")
         .attr('x', '-8')
         .attr("transform", "rotate(-60)")
         .attr('text-anchor', 'end')
-    // .attr('dy', '.35em')
-
 
     xaxis.append('text')
         .attr('fill', '#000')
+        .style('font-size', '12px')
         .attr('transform', 'translate(' + width / 2 + ',' + margin.bottom + ')')
-        .text('Material Number');
+        .text('x');
 
     //For Y axis
     g.append('g')
-        .attr('class', 'axis axis--y')
+        .attr('class', 'y axis')
         .call(d3.axisLeft(y))
         .append("text")
         .attr('transform', 'translate(-' + margin.left + ',' + height / 2 + ')rotate(-90)')
         .attr('dy', '0.71em')
         .attr('fill', '#000')
-        .text('MTTF');
+        .text('Job Index');
+
+    // add the line groups
+    var paths = g.selectAll(".pmTracking")
+        .data(records)
+        .enter().append("g")
+        .attr("class", "pmTracking");
+
+    // add  paths
+    paths.append("path")
+        .attr('class', 'line')
+        .attr("id", function (d, i) {
+            return "line_" + i;
+        })
+        .attr("d", function (d) {
+            return line(d.values);
+        })
+        .attr("stroke-width", "2")
+        .attr("fill", "none")
+        .style("stroke", function (d, i) {
+            return color(i);
+        })
+        .on("mouseover", function (d) {
+            d3.select(this).style("stroke-width", 4);
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+            div.html(`
+                        <strong>Name:</strong> <span style='color:red'>${d.name}</span>`)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+            var lineId = $(this).attr('id').split("_")[1];
+            highlightData("data" + lineId);
+            $(`#data-table-tbody tr.${"data" + lineId}`)[0].scrollIntoView();
+        })
+        .on("mouseout", function () {
+            d3.select(this).style("stroke-width", 2);
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+            var lineId = $(this).attr('id').split("_")[1];
+            removeHighlight("data" + lineId);
+        });
+
+    $('[class^=data]').on('mouseover', function () {
+        var classID = $(this).attr('class').split("data")[1];
+         $('#line'+classID).attr("stroke", 'yellow');
+        $('#line'+classID).attr('stroke-width', '+4');
+        //d3.select('#line'+classID).style({"stroke": 'yellow', 'stroke-width': 4});
+    })
+    $('[class^=data]').on('mouseout', function () {
+       var classID = $(this).attr('class').split("data")[1];
+        $('#line'+classID).attr("stroke", color(classID));
+        $('#line'+classID).attr('stroke-width', '+2');
+    })
+
     // }
     // });
 }
@@ -1564,25 +1652,57 @@ function pmTrackingHelperCreateArray(data) {
 
 //Create new array of points for Survival Analysis
 function survivalAnalysisHelperAll(data) {
-    var pathsJSON = {}
+    var pathsJSON = []
 
-    pathsJSON.AVLC = []
-    pathsJSON.AVLCLower = []
-    pathsJSON.AVLCUpper = []
+    var avlc = { name: "All vehicle, all cause", values: [] }
+    var avlcLower = { name: "All vehicle, all cause_lower_0.95", values: [] }
+    var avlcUpper = { name: "All vehicle, all cause_upper_0.95", values: [] }
 
     data.forEach(function (d) {
         if (Object.keys(d).length == 2) {
-            pathsJSON.AVLC.push({ x: d["All vehicle, all cause"], y: d["timeline"] });
-            pathsJSON.AVLCLower.push({ x: d["All vehicle, all cause"], y: d["timeline"] });
-            pathsJSON.AVLCUpper.push({ x: d["All vehicle, all cause"], y: d["timeline"] });
+            avlc.values.push({ y: +d["All vehicle, all cause"], x: +d["timeline"] });
+            avlcLower.values.push({ y: +d["All vehicle, all cause"], x: +d["timeline"] });
+            avlcUpper.values.push({ y: +d["All vehicle, all cause"], x: +d["timeline"] });
         } else {
-            pathsJSON.AVLC.push({ x: d["All vehicle, all cause"], y: d["timeline"] });
-            pathsJSON.AVLCLower.push({ x: d[`All vehicle, all cause_lower_0.95`], y: d["timeline"] });
-            pathsJSON.AVLCUpper.push({ x: d[`All vehicle, all cause_upper_0.95`], y: d["timeline"] });
+            avlc.values.push({ y: d["All vehicle, all cause"], x: +d["timeline"] });
+            avlcLower.values.push({ y: +d[`All vehicle, all cause_lower_0.95`], x: +d["timeline"] });
+            avlcUpper.values.push({ y: +d[`All vehicle, all cause_upper_0.95`], x: +d["timeline"] });
         }
     })
+    pathsJSON.push(avlc, avlcLower, avlcUpper);
     return pathsJSON;
+}
+//Create new array of points for Survival Analysis
+function survivalAnalysisHelperNotAll(data) {
+    var pathsJSON = []
 
+    var earlier = { name: "Earlier batch (BA.1+BA.2)", values: [] }
+    var eLower = { name: "Earlier batch (BA.1+BA.2)_lower_0.95", values: [] }
+    var eUpper = { name: "Earlier batch (BA.1+BA.2)_upper_0.95", values: [] }
+
+    var later = { name: "Later batch (BA.3+BA.4)", values: [] }
+
+    data.forEach(function (d) {
+        if (Object.keys(d).length == 2) {
+            if ("Later batch (BA.3+BA.4)" in d) {
+                later.values.push({ y: +d["Later batch (BA.3+BA.4)"], x: +d["timeline"] });
+            } else {
+                earlier.values.push({ y: +d["Earlier batch (BA.1+BA.2)"], x: +d["timeline"] });
+            }
+        }
+        else if (Object.keys(d).length == 3) {
+            later.values.push({ y: +d["Later batch (BA.3+BA.4)"], x: +d["timeline"] });
+            earlier.values.push({ y: +d["Earlier batch (BA.1+BA.2)"], x: +d["timeline"] });
+
+        }
+        else {
+            earlier.values.push({ y: +d["Earlier batch (BA.1+BA.2)"], x: +d["timeline"] });
+            eLower.values.push({ y: +d[`Earlier batch (BA.1+BA.2)_lower_0.95`], x: +d["timeline"] });
+            eUpper.values.push({ y: +d[`Earlier batch (BA.1+BA.2)_upper_0.95`], x: +d["timeline"] });
+        }
+    })
+    pathsJSON.push(earlier, eLower, eUpper, later)
+    return pathsJSON;
 }
 //Get random color
 function getRandomColor() {
