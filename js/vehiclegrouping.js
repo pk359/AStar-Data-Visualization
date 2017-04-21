@@ -1,5 +1,5 @@
 //http://10.217.163.124:8080/api/vehicle-grouping?type=1
-var vehiclegrouping = [
+var vehiclegroupingData = [
   {
     "Count": "265",
     "Group": "BA 2013",

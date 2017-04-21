@@ -160,6 +160,7 @@
                 </div>
                 <input type="submit" class="btn btn-default" value="Submit" />
             </form>
+            <!--general scatter plot mileage-->
             <form id="generalScatterPlotMileage-form" onsubmit="return false;">
                 <div class="form-group">
                     <label for="start_date-generalScatterPlotMileage" class="col-2 col-form-label">Start Date</label>
@@ -171,7 +172,7 @@
                 </div>
                 <input type="submit" class="btn btn-default" value="Submit" />
             </form>
-
+            <!--component bar plot mttf critical form-->
             <form id="componentBarPlotMttfCritical-form" onsubmit="return false;">
                 <div class="form-group">
                     <label for="option-componentBarPlotMttfCritical" class="col-2 col-form-label">Option</label>
@@ -186,7 +187,7 @@
                 </div>
                 <input type="submit" class="btn btn-default" value="Submit" />
             </form>
-
+            <!--component bar plot mttf all-->
             <form id="componentBarPlotMttfAll-form" onsubmit="return false;">
                 <div class="form-group">
                     <label for="option-componentBarPlotMttfAll" class="col-2 col-form-label">Option</label>
@@ -201,6 +202,7 @@
                 </div>
                 <input type="submit" class="btn btn-default" value="Submit" />
             </form>
+            <!--component bar plot all form-->
             <form id="componentBarPlotAll-form" onsubmit="return false;">
                 <div class="form-group">
                     <label for="start_date-componentBarPlotAll" class="col-2 col-form-label">Start Date</label>
@@ -223,6 +225,7 @@
                 </div>
                 <input type="submit" class="btn btn-default" value="Submit" />
             </form>
+            <!--component bar plot critical-->
             <form id="componentBarPlotCritical-form" onsubmit="return false;">
                 <div class="form-group">
                     <label for="start_date-componentBarPlotCritical" class="col-2 col-form-label">Start Date</label>
@@ -245,6 +248,7 @@
                 </div>
                 <input type="submit" class="btn btn-default" value="Submit" />
             </form>
+            <!--pm tracking form -->
             <form id="pmTracking-form" onsubmit="return false;">
 
                 <div class="form-group">
@@ -267,6 +271,7 @@
                 </div>
                 <input type="submit" class="btn btn-default" value="Submit" />
             </form>
+            <!--survival analysis form-->
             <form id="survivalAnalysis-form" onsubmit="return false;">
 
                 <div class="form-group">
@@ -284,26 +289,87 @@
                 </div>
                 <input type="submit" class="btn btn-default" value="Submit" />
             </form>
-
+            <!--costing form-->
             <form id="costing-form" onsubmit="return false;">
                 <div class="form-group">
-                    <label for="material_type-costing" class="col-2 col-form-label">Start Date</label>
-                    <input class="form-control material_type" type="text" id="material_type-costing" value="0" required>
+                    <label for="material_type-costing" class="col-2 col-form-label">Material Type</label>
+                    <select id="material_type-costing" class="form-control">
+                    <option value="0" selected="true">PM</option>
+                    <option value="1">CM</option>
+                    <option value="2">PM&CM</option>
+                </select></div>
+                <div class="form-group">
+                    <label for="vehicle_registration_year-costing" class="col-2 col-form-label">Vehicle Registration Year</label>
+                    <input class="form-control vehicle_registration_year" type="number" id="vehicle_registration_year-costing" value="2013" required>
                 </div>
                 <div class="form-group">
-                    <label for="end_date-costing" class="col-2 col-form-label">End Date</label>
-                    <input class="form-control end_date" type="text" id="end_date-costing" value="2014-12-02" required>
+                    <label for="vehicle_lifespan-costing" class="col-2 col-form-label">Vehicle Lifespan</label>
+                    <input class="form-control vehicle_lifespan" type="text" id="vehicle_lifespan-costing" value="6" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="inflation_rate-costing" class="col-2 col-form-label">Vehicle Registration Year</label>
+                    <input class="form-control inflation_rate" type="number" id="inflation_rate-costing" value="3" required>
                 </div>
                 <div class="form-group">
-                    <label for="option-costing" class="col-2 col-form-label">Option</label>
-                    <select id="option-costing" class="form-control">
-                    <option value="1" selected="true">Quantity</option>
-                    <option value="2">Cost</option>
-                </select>
+                    <label for="min_vehicle_record-costing" class="col-2 col-form-label">Vehicle Lifespan</label>
+                    <input class="form-control min_vehicle_record" type="text" id="min_vehicle_record-costing" value="10" required>
+                </div>
+                <input type="submit" class="btn btn-default" value="Submit" />
+            </form>
+
+            <!--Technicians form-->
+            <form id="technicians-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="start_date-technicians" class="col-2 col-form-label">Start Date</label>
+                    <input class="form-control start_date" type="text" id="start_date-technicians" value="2013-04-21" required>
                 </div>
                 <div class="form-group">
-                    <label for="count-costing" class="col-2 col-form-label">Number of Material</label>
-                    <input class="form-control" type="number" value="20" id="count-costing" min=1 required>
+                    <label for="end_date-technicians" class="col-2 col-form-label">End Date</label>
+                    <input class="form-control end_date" type="text" id="end_date-technicians" value="2016-03-02" required>
+                </div>
+                <input type="submit" class="btn btn-default" value="Submit" />
+            </form>
+
+            <!--Ive form-->
+            <form id="ive-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="vehicle_number-ive" class="col-2 col-form-label">Vehicle Number</label>
+                    <input class="form-control vehicle_number" type="text" id="vehicle_number-ive" value="SHB1034R" required>
+                </div>
+                <input type="submit" class="btn btn-default" value="Submit" />
+            </form>
+            <!--Vehicle Grouping form-->
+            <form id="vehicleGrouping-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="type-vehicleGrouping" class="col-2 col-form-label">Type of Subgroup</label>
+                    <select id="type-vehicleGrouping" class="form-control">
+                    <option value="0" selected="true">Registration year</option>
+                    <option value="1">Daily Mileage</option>
+                </select></div>
+                <input type="submit" class="btn btn-default" value="Submit" />
+            </form>
+
+            <!--cm tracking form -->
+            <form id="cmTracking-form" onsubmit="return false;">
+
+                <div class="form-group">
+                    <label for="registrationYear-cmTracking" class="col-2 col-form-label">Registration Year</label>
+                    <select id="registrationYear-cmTracking" class="form-control">
+                        <option value="2013" selected="true">2013</option>
+                        <option value="2014" >2014</option>
+                        <option value="2015" >2015</option>
+                        <option value="2016">2016</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dailyMileageCategory-cmTracking" class="col-2 col-form-label">Daily Mileage Group</label>
+                    <select id="dailyMileageCategory-cmTracking" class="form-control">
+                        <option value="1" selected="true">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
                 </div>
                 <input type="submit" class="btn btn-default" value="Submit" />
             </form>

@@ -1193,19 +1193,20 @@ function componentBarPlotCritical(fields) {
 
 function pmTracking(fields) {
 
-    // var url = `http://10.217.163.77:8080/api/pm-tracking?registration-batch-year=${fields[0]}&daily-mileage=${fields[1]}`;
-    // $.getJSON(url)
-    //     .done(function (data) {
+    var url = `http://10.217.163.124:8080/api/pm-tracking?registration-batch-year=${fields[0]}&daily-mileage=${fields[1]}`;
+    $.getJSON(url)
+        .done(function (data) {
 
-    //         if (data.length <= 0) {
-    //             alert("No data available")
-    //         } else {
+            if (data.length <= 0) {
+                alert("No data available")
+            } else {
+                console.log('here')
     $('.result-div').height($('.result-div').height());
     $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
     $('#data-table-tbody').height($('.result-div').height());
     //$('#data-table-tbody').width($('.data-table').width()-29);
 
-    var data = pmt;
+    // var data = pmt;
     //Create array
     var records = pmTrackingHelperCreateArray(data);
 
@@ -1425,11 +1426,11 @@ function pmTracking(fields) {
         var className = $(this).attr('class');
         removeHighlight(className.split(" ")[0]);
     })
-    console.log(records);
+    // console.log(records);
 
 
-    //     }
-    // });
+        }
+    });
 
 }
 
@@ -1611,18 +1612,514 @@ function survivalAnalysis(fields) {
 
     $('[class^=data]').on('mouseover', function () {
         var classID = $(this).attr('class').split("data")[1];
-         $('#line'+classID).attr("stroke", 'yellow');
-        $('#line'+classID).attr('stroke-width', '+4');
+        $('#line' + classID).attr("stroke", 'yellow');
+        $('#line' + classID).attr('stroke-width', '+4');
         //d3.select('#line'+classID).style({"stroke": 'yellow', 'stroke-width': 4});
     })
     $('[class^=data]').on('mouseout', function () {
-       var classID = $(this).attr('class').split("data")[1];
-        $('#line'+classID).attr("stroke", color(classID));
-        $('#line'+classID).attr('stroke-width', '+2');
+        var classID = $(this).attr('class').split("data")[1];
+        $('#line' + classID).attr("stroke", color(classID));
+        $('#line' + classID).attr('stroke-width', '+2');
     })
 
     // }
     // });
+}
+
+function costing(fields) {
+    // var url = `http://10.217.163.77:8080/api/component-bar-plot-cm?start-date=${fields[0]}&end-date=${fields[1]}&option=${fields[2]}&no-of-rows=${fields[3]}`;
+    // $.getJSON(url)
+    //     .done(function (data) {
+    //         if (data.length <= 0) {
+    //             alert("No data available")
+    //         } else {
+    $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
+    $('#data-table-tbody').height($('.result-div').height());
+    //$('#data-table-tbody').width($('.data-table').width()-29);
+    var option = "Value";
+    var data = costingData;
+    var headers = data[0];
+    var str = "<tr><th>#</th>";
+    Object.keys(headers).forEach(function (k) {
+        str += "<th>" + k + "</th>";
+    })
+    $("#data-table-thead").append(str + "</tr>");
+
+    data = data.sort(function (a, b) {
+        return a[option] - b[option];
+    });
+    data.forEach(function (d, i) {
+        d[option] = +d[option];
+        str = `<tr class='data${i}'><td>${i + 1}</td>`
+        Object.keys(d).forEach(function (k, i) {
+            str += "<td>" + d[k] + "</td>";
+        })
+        $("#data-table-tbody").append(str + "</tr>");
+    });
+
+
+    var svg = d3.select("svg"),
+        margin = {
+            top: 20,
+            right: 20,
+            bottom: 60,
+            left: 50
+        },
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom;
+
+
+    var x = d3.scaleBand().rangeRound([0, width]).padding(0.1);
+    //y = d3.scaleLinear().rangeRound([height, 0]);
+
+    var y = d3.scaleLinear()
+        .rangeRound([height, 0]);
+
+    x.domain(data.map(function (d, i) {
+        return d['Cost Type'];
+    }));
+
+    y.domain([0.1, d3.max(data, function (d) {
+        return d[option];
+    })]);
+    //y.domain([0.1, data[data.length -1]]);
+
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    var g = svg.append("g")
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+    var xaxis = g.append('g')
+        .attr('class', 'axis axis--x')
+        .style('font-size', '8px')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(d3.axisBottom(x));
+
+    xaxis.selectAll("text")
+        .attr('x', '-8')
+        .attr("transform", "rotate(-60)")
+        .attr('text-anchor', 'end')
+    // .attr('dy', '.35em')
+
+
+    xaxis.append('text')
+        .attr('fill', '#000')
+        .attr('transform', 'translate(' + width / 2 + ',' + margin.bottom + ')')
+        .text('Yearly Cost');
+
+    //For Y axis
+    g.append('g')
+        .attr('class', 'axis axis--y')
+        .call(d3.axisLeft(y))
+        .append("text")
+        .attr('transform', 'translate(-' + margin.left + ',' + height / 2 + ')rotate(-90)')
+        .attr('dy', '0.71em')
+        .attr('fill', '#000')
+        .text(option);
+
+    g.selectAll('.bar')
+        .data(data)
+        .enter().append('rect')
+        .attr('class', function (d, i) {
+            return "bar data" + i;
+        })
+        .attr('x', function (d) {
+            return x(d['Cost Type']);
+        })
+        .attr('style', 'cursor:pointer')
+        .attr('y', function (d, i) {
+            return y(d[option]);
+        })
+        .attr('fill', function (d, i) {
+            // if (i > 0) {
+            //     //If lastmaterial number is same as new one set sameAsLast to true 
+            //     if (data[i - 1]['Cost Type'] == d['Cost Type']) {
+            //         return getRandomColor();
+            //     }
+            // }
+            return getRandomColor();
+        })
+        .attr('width', x.bandwidth())
+        .attr('height', function (d, i) {
+            if (i > 0) {
+                //If lastmaterial number is same as new one set sameAsLast to true 
+                if (data[i - 1]['Cost Type'] == d['Cost Type']) {
+                    return height - y(d[option]) - y(data[i - 1][option]);
+                }
+            }
+            return height - y(d[option]);
+        })
+        .on('mouseover', function (d, i) {
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+            div.html(`<strong>#</strong><span style='color:yellow'>${i + 1}</span><br>
+                        <strong>${option}:</strong> <span style='color:red'>${d[option]}</span><br>
+                        <strong>Cost Type:</strong> <span style='color:red'>${d['Cost Type']}</span>`)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+
+            var className = $(this).attr('class');
+            highlightData(className.split(" ")[1]);
+            //$(`#data-table-tbody tr.${className.split(" ")[1]}`)[0].scrollIntoView();
+
+        })
+        .on('mouseout', function () {
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+            var className = $(this).attr('class');
+            removeHighlight(className.split(" ")[1]);
+        })
+    $('.result-div').append(`<h5 style="text-align:center">Sorted on <span style="font-size: 16px; color:red">${option}</span> in <strong>ascending order</strong></h5>`);
+
+    $('[class^=data]').on('mouseover', function () {
+        var className = $(this).attr('class');
+        highlightData(className.split(" "));
+    })
+    $('[class^=data]').on('mouseout', function () {
+        var className = $(this).attr('class');
+        removeHighlight(className.split(" ")[0]);
+    })
+    //     }
+    // });
+}
+
+function technicians(fields) {
+    // var url = `http://10.217.163.77:8080/api/pm-tracking?registration-batch-year=${fields[0]}&daily-mileage=${fields[1]}`;
+    // $.getJSON(url)
+    //     .done(function (data) {
+
+    //         if (data.length <= 0) {
+    //             alert("No data available")
+    //         } else {
+    $('.result-div').height($('.result-div').height());
+    $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
+    $('#data-table-tbody').height($('.result-div').height());
+    //$('#data-table-tbody').width($('.data-table').width()-29);
+    var data = techniciansData;
+    var data = techniciansHelper(data);
+    var headers = data[0];
+    var str = "<tr><th>#</th>";
+    Object.keys(headers).forEach(function (k) {
+        str += "<th>" + k + "</th>";
+    })
+    $("#data-table-thead").append(str + "</tr>");
+    data.forEach(function (d, i) {
+        str = `<tr class='data${i}'><td>${i + 1}</td>`
+        Object.keys(d).forEach(function (k, i) {
+            str += "<td>" + d[k] + "</td>";
+        })
+        $("#data-table-tbody").append(str + "</tr>");
+    });
+
+
+    var svg = d3.select("svg"),
+        margin = {
+            top: 20,
+            right: 20,
+            bottom: 60,
+            left: 50
+        },
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom,
+        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var x = d3.scaleBand()
+        .rangeRound([0, width])
+        .padding(0.3)
+        .align(0.3);
+
+    var y = d3.scaleLinear()
+        .rangeRound([height, 0]);
+
+    var z = d3.scaleOrdinal()
+        .range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+    var stack = d3.stack();
+
+    data.sort(function (a, b) {
+        return b.total - a.total;
+    });
+
+    console.log(data);
+    var keys = Object.keys(data[0]);
+
+    data.sort(function (a, b) {
+        return b.total - a.total;
+    });
+    x.domain(data.map(function (d) {
+        return d.EmployeeNo;
+    }));
+    y.domain([0, d3.max(data, function (d) {
+        return d.total;
+    })]).nice();
+    z.domain(keys);
+
+    g.append("g")
+        .selectAll("g")
+        .data(d3.stack().keys(keys)(data))
+        .enter().append("g")
+        .attr("fill", function (d) {
+            return z(d.key);
+        })
+        .selectAll("rect")
+        .data(function (d) {
+            return d;
+        })
+        .enter().append("rect")
+        .attr("x", function (d) {
+            return x(d.data.MaterialNo);
+        })
+        .attr("y", function (d) {
+            return y(d[1]);
+        })
+        .attr("height", function (d) {
+            return y(d[0]) - y(d[1]);
+        })
+        .attr("width", x.bandwidth());
+
+    g.append("g")
+        .attr("class", "axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+    g.append("g")
+        .attr("class", "axis")
+        .call(d3.axisLeft(y).ticks(null, "s"))
+        .append("text")
+        .attr("x", 2)
+        .attr("y", y(y.ticks().pop()) + 0.5)
+        .attr("dy", "0.32em")
+        .attr("fill", "#000")
+        .attr("font-weight", "bold")
+        .attr("text-anchor", "start")
+        .text("Population");
+
+    var legend = g.append("g")
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 10)
+        .attr("text-anchor", "end")
+        .selectAll("g")
+        .data(keys.slice().reverse())
+        .enter().append("g")
+        .attr("transform", function (d, i) {
+            return "translate(0," + i * 20 + ")";
+        });
+
+    legend.append("rect")
+        .attr("x", width - 19)
+        .attr("width", 19)
+        .attr("height", 19)
+        .attr("fill", z);
+
+    legend.append("text")
+        .attr("x", width - 24)
+        .attr("y", 9.5)
+        .attr("dy", "0.32em")
+        .text(function (d) {
+            return d;
+        });
+}
+
+
+
+function ive(fields) {
+    console.log(fields);
+}
+
+function vehicleGrouping(fields) {
+     // var url = `http://10.217.163.77:8080/api/component-bar-plot-cm?start-date=${fields[0]}&end-date=${fields[1]}&option=${fields[2]}&no-of-rows=${fields[3]}`;
+    // $.getJSON(url)
+    //     .done(function (data) {
+    //         if (data.length <= 0) {
+    //             alert("No data available")
+    //         } else {
+    $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
+    $('#data-table-tbody').height($('.result-div').height());
+    //$('#data-table-tbody').width($('.data-table').width()-29);
+    var option = "Count";
+    var data = vehiclegroupingData;
+    var headers = data[0];
+    var str = "<tr><th>#</th>";
+    Object.keys(headers).forEach(function (k) {
+        str += "<th>" + k + "</th>";
+    })
+    $("#data-table-thead").append(str + "</tr>");
+
+    
+    data.forEach(function (d, i) {
+        d[option] = +d[option];
+        str = `<tr class='data${i}'><td>${i + 1}</td>`
+        Object.keys(d).forEach(function (k, i) {
+            str += "<td>" + d[k] + "</td>";
+        })
+        $("#data-table-tbody").append(str + "</tr>");
+    });
+
+
+    var svg = d3.select("svg"),
+        margin = {
+            top: 20,
+            right: 20,
+            bottom: 60,
+            left: 50
+        },
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom;
+
+
+    var x = d3.scaleBand().rangeRound([0, width]);
+    //y = d3.scaleLinear().rangeRound([height, 0]);
+
+    var y = d3.scaleLinear()
+        .rangeRound([height, 0]);
+
+    x.domain(data.map(function (d, i) {
+        return d['Group'];
+    }));
+
+    y.domain([0.1, d3.max(data, function (d) {
+        return d[option];
+    })]);
+    //y.domain([0.1, data[data.length -1]]);
+
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    var g = svg.append("g")
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+    var xaxis = g.append('g')
+        .attr('class', 'axis axis--x')
+        .style('font-size', '8px')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(d3.axisBottom(x));
+
+    xaxis.selectAll("text")
+        .attr('x', '-8')
+        .attr("transform", "rotate(-60)")
+        .attr('text-anchor', 'end')
+    // .attr('dy', '.35em')
+
+
+    xaxis.append('text')
+        .attr('fill', '#000')
+        .attr('transform', 'translate(' + width / 2 + ',' + margin.bottom + ')')
+        .text('@Vehicle Group');
+
+    //For Y axis
+    g.append('g')
+        .attr('class', 'axis axis--y')
+        .call(d3.axisLeft(y))
+        .append("text")
+        .attr('transform', 'translate(-' + margin.left + ',' + height / 2 + ')rotate(-90)')
+        .attr('dy', '0.71em')
+        .attr('fill', '#000')
+        .text(option);
+
+    g.selectAll('.bar')
+        .data(data)
+        .enter().append('rect')
+        .attr('class', function (d, i) {
+            return "bar data" + i;
+        })
+        .attr('x', function (d) {
+            return x(d['Cost Type']);
+        })
+        .attr('style', 'cursor:pointer')
+        .attr('y', function (d, i) {
+            return y(d[option]);
+        })
+        .attr('fill', function (d, i) {
+            // if (i > 0) {
+            //     //If lastmaterial number is same as new one set sameAsLast to true 
+            //     if (data[i - 1]['Cost Type'] == d['Cost Type']) {
+            //         return getRandomColor();
+            //     }
+            // }
+            return getRandomColor();
+        })
+        .attr('width', x.bandwidth())
+        .attr('height', function (d, i) {
+           return y(d[option])
+        })
+        .on('mouseover', function (d, i) {
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+            div.html(`<strong>#</strong><span style='color:yellow'>${i + 1}</span><br>
+                        <strong>${option}:</strong> <span style='color:red'>${d[option]}</span><br>
+                        <strong>Group:</strong> <span style='color:red'>${d['Group']}</span>
+                        <strong>Percent:</strong> <span style='color:red'>${d['Perc'] + "%"}</span>`)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+
+            var className = $(this).attr('class');
+            highlightData(className.split(" ")[1]);
+            //$(`#data-table-tbody tr.${className.split(" ")[1]}`)[0].scrollIntoView();
+
+        })
+        .on('mouseout', function () {
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+            var className = $(this).attr('class');
+            removeHighlight(className.split(" ")[1]);
+        })
+    $('.result-div').append(`<h5 style="text-align:center">Sorted on <span style="font-size: 16px; color:red">${option}</span> in <strong>ascending order</strong></h5>`);
+
+    $('[class^=data]').on('mouseover', function () {
+        var className = $(this).attr('class');
+        highlightData(className.split(" "));
+    })
+    $('[class^=data]').on('mouseout', function () {
+        var className = $(this).attr('class');
+        removeHighlight(className.split(" ")[0]);
+    })
+    //     }
+    // });
+}
+
+function cmTracking(fields) {
+    console.log(fields);
+}
+
+function techniciansHelper(data) {
+    var uniqueEmployees = []
+    data.forEach(function (d, i) {
+        if ($.inArray(d.EmployeeNo, uniqueEmployees) == -1) {
+            uniqueEmployees.push(d.EmployeeNo);
+        }
+    })
+
+    var newData = []
+    var empData = {}
+    for (var i = 0; i < uniqueEmployees.length; i++) {
+        var empNo = uniqueEmployees[i];
+        empData = {
+            EmployeeNo: empNo + ""
+        }
+        data.forEach(function (d, i) {
+            if (empNo === d.EmployeeNo) {
+                var materialNo = d.MaterialNo;
+                empData[`${materialNo}`] = +d.NBadJobs;
+            }
+        })
+        newData.push(empData);
+    }
+    newData.forEach(function (d, i) {
+        d = type(d, i, Object.keys(d));
+    })
+    console.log(newData)
+    return newData;
+}
+
+function type(d, i, columns) {
+    for (i = 1, t = 0; i < columns.length; ++i) t += d[columns[i]] = +d[columns[i]];
+    d.total = t;
+    return d;
 }
 
 function pmTrackingHelperCreateArray(data) {
@@ -1654,19 +2151,46 @@ function pmTrackingHelperCreateArray(data) {
 function survivalAnalysisHelperAll(data) {
     var pathsJSON = []
 
-    var avlc = { name: "All vehicle, all cause", values: [] }
-    var avlcLower = { name: "All vehicle, all cause_lower_0.95", values: [] }
-    var avlcUpper = { name: "All vehicle, all cause_upper_0.95", values: [] }
+    var avlc = {
+        name: "All vehicle, all cause",
+        values: []
+    }
+    var avlcLower = {
+        name: "All vehicle, all cause_lower_0.95",
+        values: []
+    }
+    var avlcUpper = {
+        name: "All vehicle, all cause_upper_0.95",
+        values: []
+    }
 
     data.forEach(function (d) {
         if (Object.keys(d).length == 2) {
-            avlc.values.push({ y: +d["All vehicle, all cause"], x: +d["timeline"] });
-            avlcLower.values.push({ y: +d["All vehicle, all cause"], x: +d["timeline"] });
-            avlcUpper.values.push({ y: +d["All vehicle, all cause"], x: +d["timeline"] });
+            avlc.values.push({
+                y: +d["All vehicle, all cause"],
+                x: +d["timeline"]
+            });
+            avlcLower.values.push({
+                y: +d["All vehicle, all cause"],
+                x: +d["timeline"]
+            });
+            avlcUpper.values.push({
+                y: +d["All vehicle, all cause"],
+                x: +d["timeline"]
+            });
         } else {
-            avlc.values.push({ y: d["All vehicle, all cause"], x: +d["timeline"] });
-            avlcLower.values.push({ y: +d[`All vehicle, all cause_lower_0.95`], x: +d["timeline"] });
-            avlcUpper.values.push({ y: +d[`All vehicle, all cause_upper_0.95`], x: +d["timeline"] });
+            avlc.values.push({
+                y: d["All vehicle, all cause"],
+                x: +d["timeline"]
+            });
+            avlcLower.values.push({
+                y: +d[`All vehicle, all cause_lower_0.95`],
+                x: +d["timeline"]
+            });
+            avlcUpper.values.push({
+                y: +d[`All vehicle, all cause_upper_0.95`],
+                x: +d["timeline"]
+            });
         }
     })
     pathsJSON.push(avlc, avlcLower, avlcUpper);
@@ -1676,29 +2200,60 @@ function survivalAnalysisHelperAll(data) {
 function survivalAnalysisHelperNotAll(data) {
     var pathsJSON = []
 
-    var earlier = { name: "Earlier batch (BA.1+BA.2)", values: [] }
-    var eLower = { name: "Earlier batch (BA.1+BA.2)_lower_0.95", values: [] }
-    var eUpper = { name: "Earlier batch (BA.1+BA.2)_upper_0.95", values: [] }
+    var earlier = {
+        name: "Earlier batch (BA.1+BA.2)",
+        values: []
+    }
+    var eLower = {
+        name: "Earlier batch (BA.1+BA.2)_lower_0.95",
+        values: []
+    }
+    var eUpper = {
+        name: "Earlier batch (BA.1+BA.2)_upper_0.95",
+        values: []
+    }
 
-    var later = { name: "Later batch (BA.3+BA.4)", values: [] }
+    var later = {
+        name: "Later batch (BA.3+BA.4)",
+        values: []
+    }
 
     data.forEach(function (d) {
         if (Object.keys(d).length == 2) {
             if ("Later batch (BA.3+BA.4)" in d) {
-                later.values.push({ y: +d["Later batch (BA.3+BA.4)"], x: +d["timeline"] });
+                later.values.push({
+                    y: +d["Later batch (BA.3+BA.4)"],
+                    x: +d["timeline"]
+                });
             } else {
-                earlier.values.push({ y: +d["Earlier batch (BA.1+BA.2)"], x: +d["timeline"] });
+                earlier.values.push({
+                    y: +d["Earlier batch (BA.1+BA.2)"],
+                    x: +d["timeline"]
+                });
             }
-        }
-        else if (Object.keys(d).length == 3) {
-            later.values.push({ y: +d["Later batch (BA.3+BA.4)"], x: +d["timeline"] });
-            earlier.values.push({ y: +d["Earlier batch (BA.1+BA.2)"], x: +d["timeline"] });
+        } else if (Object.keys(d).length == 3) {
+            later.values.push({
+                y: +d["Later batch (BA.3+BA.4)"],
+                x: +d["timeline"]
+            });
+            earlier.values.push({
+                y: +d["Earlier batch (BA.1+BA.2)"],
+                x: +d["timeline"]
+            });
 
-        }
-        else {
-            earlier.values.push({ y: +d["Earlier batch (BA.1+BA.2)"], x: +d["timeline"] });
-            eLower.values.push({ y: +d[`Earlier batch (BA.1+BA.2)_lower_0.95`], x: +d["timeline"] });
-            eUpper.values.push({ y: +d[`Earlier batch (BA.1+BA.2)_upper_0.95`], x: +d["timeline"] });
+        } else {
+            earlier.values.push({
+                y: +d["Earlier batch (BA.1+BA.2)"],
+                x: +d["timeline"]
+            });
+            eLower.values.push({
+                y: +d[`Earlier batch (BA.1+BA.2)_lower_0.95`],
+                x: +d["timeline"]
+            });
+            eUpper.values.push({
+                y: +d[`Earlier batch (BA.1+BA.2)_upper_0.95`],
+                x: +d["timeline"]
+            });
         }
     })
     pathsJSON.push(earlier, eLower, eUpper, later)

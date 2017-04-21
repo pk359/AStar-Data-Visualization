@@ -1,5 +1,5 @@
 //http://10.217.163.124:8080/api/technicians?start-date=2013-04-21&end-date=2016-03-02
-var technicians = [
+var techniciansData = [
     {
         "EmployeeNo": "11789",
         "MaterialNo": "6503707",
