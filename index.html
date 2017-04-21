@@ -93,6 +93,25 @@
                 Survival Analysis
             </li>
         </ul>
+
+        <li id='costing-menuitem'>
+            Costing
+        </li>
+        <li id='technicians-menuitem'>
+            Technicians
+        </li>
+        <li id='ive-menuitem'>
+            Ive
+        </li>
+        <li id='vehicleGrouping-menuitem'>
+            Vehicle Grouping
+        </li>
+        <li id='cmTracking-menuitem'>
+            CM Tracking
+        </li>
+        <li id='association-menuitem'>
+            Association
+        </li>
     </ul>
     <div class="row text-center"><span id="formName-header" style="    font-size: 32px;
     color: #777777;">component-scatter-plot-all </span></div>
@@ -262,6 +281,29 @@
                         <option value="Daily">Daily Mileage</option>
                         <option value="PM">PM Adherence</option>
                     </select>
+                </div>
+                <input type="submit" class="btn btn-default" value="Submit" />
+            </form>
+
+            <form id="costing-form" onsubmit="return false;">
+                <div class="form-group">
+                    <label for="material_type-costing" class="col-2 col-form-label">Start Date</label>
+                    <input class="form-control material_type" type="text" id="material_type-costing" value="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="end_date-costing" class="col-2 col-form-label">End Date</label>
+                    <input class="form-control end_date" type="text" id="end_date-costing" value="2014-12-02" required>
+                </div>
+                <div class="form-group">
+                    <label for="option-costing" class="col-2 col-form-label">Option</label>
+                    <select id="option-costing" class="form-control">
+                    <option value="1" selected="true">Quantity</option>
+                    <option value="2">Cost</option>
+                </select>
+                </div>
+                <div class="form-group">
+                    <label for="count-costing" class="col-2 col-form-label">Number of Material</label>
+                    <input class="form-control" type="number" value="20" id="count-costing" min=1 required>
                 </div>
                 <input type="submit" class="btn btn-default" value="Submit" />
             </form>
