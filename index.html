@@ -5,27 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASTAR</title>
-    <!--<link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">-->
-    <!--<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">-->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <!--<link rel="stylesheet" href="css/style.css">-->
-    <!--<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>-->
-    <!--<script src="js/bootstrap.min.js"></script>-->
-
-
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
-    <link rel="stylesheet" href="bower_components/jquery-ui/themes/base/jquery-ui.min.css">
     <link rel="stylesheet" href="css/style.css">
-
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/jquery-ui/jquery-ui.js"></script>
-    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="bower_components/chart.js/dist/Chart.min.js"></script>
-
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
     <script src="js/d3js.js"></script>
     <script src="js/gmdata.js"></script>
     <script src="js/cbpma.js"></script>
@@ -42,6 +30,7 @@
     <script src="js/vehiclegrouping.js"></script>
     <script src="js/saAll.js"></script>
     <script src="js/saBatch.js"></script>
+
 </head>
 
 <body>
@@ -89,11 +78,7 @@
             <li id='pmTracking-menuitem'>
                 Tracking
             </li>
-            <li id='survivalAnalysis-menuitem'>
-                Survival Analysis
-            </li>
         </ul>
-
         <li id='costing-menuitem'>
             Costing
         </li>
@@ -376,7 +361,7 @@
         </div>
         <div style="outline: 1px solid black;" class="col-sm-6 result-div"></div>
         <div class="col-sm-4 data-table" style="font-size: 11px; padding: 0;">
-            <table class="table table-responsive">
+            <table class="table table-responsive " id="dataTable">
                 <thead id="data-table-thead">
 
                 </thead>

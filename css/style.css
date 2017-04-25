@@ -110,10 +110,6 @@ circle.circle:hover {
     display: none;
 }
 
-/*.data-table {
-    overflow: auto;
-}*/
-
 .highlight-data {
     background: yellow;
     fill: yellow;
@@ -140,9 +136,9 @@ div.tooltip {
     border-radius: 8px;
     pointer-events: none;
 }
-thead, tbody{
-    display: block;
-}
-tbody{
-    overflow: scroll;
+thead, tbody { display: block; }
+
+tbody {
+    overflow-y: auto;    /* Trigger vertical scroll    */
+    overflow-x: hidden;  /* Hide the horizontal scroll */
 }
