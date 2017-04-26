@@ -3,8 +3,6 @@ $('#help-content').hide();
 formDisplayer('componentScatterPlotAll');
 $('.start_date').val('2013-04-21');
 $('.end_date').val('2014-12-02');
-// $('.result-div').height($('.input-forms').height() * 1.61);
-
 $(function () {
     $(document).ajaxStart(function () {
         $('#loadingModal').modal({
@@ -74,7 +72,6 @@ function adjustMenuBar() {
 
 function adjustHelpBar() {
     $('#help-content').toggle('slide');
-    // $('#help-content').css('right', '200px')
 }
 
 //D3 scatterplot
@@ -101,6 +98,7 @@ function componentScatterPlotAll(fields) {
                     return a[option] - b[option];
                 });
                 data.forEach(function (d, i) {
+                    // + converts a data into a number if possible
                     d[option] = +d[option];
                     str = `<tr class='data${i}'><td>${i + 1}</td>`
                     Object.keys(d).forEach(function (k, i) {
@@ -121,8 +119,8 @@ function componentScatterPlotAll(fields) {
 
 
                 var x = d3.scaleBand().rangeRound([0, width]).padding(.1);
-                //y = d3.scaleLinear().rangeRound([height, 0]);
 
+                //setting a log scale.
                 var y = d3.scaleLog()
                     .rangeRound([height, 0]);
 
@@ -133,7 +131,6 @@ function componentScatterPlotAll(fields) {
                 y.domain([0.1, d3.max(data, function (d) {
                     return d[option];
                 })]);
-                //y.domain([0.1, data[data.length -1]]);
 
                 var div = d3.select("body").append("div")
                     .attr("class", "tooltip")
@@ -151,8 +148,6 @@ function componentScatterPlotAll(fields) {
                     .attr('x', '-8')
                     .attr("transform", "rotate(-60)")
                     .attr('text-anchor', 'end')
-                // .attr('dy', '.35em')
-
 
                 xaxis.append('text')
                     .attr('fill', '#000')
@@ -265,7 +260,6 @@ function componentBarPlotCm(fields) {
 
 
                 var x = d3.scaleBand().rangeRound([0, width]).padding(0.1);
-                //y = d3.scaleLinear().rangeRound([height, 0]);
 
                 var y = d3.scaleLinear()
                     .rangeRound([height, 0]);
@@ -277,7 +271,6 @@ function componentBarPlotCm(fields) {
                 y.domain([0.1, d3.max(data, function (d) {
                     return d[option];
                 })]);
-                //y.domain([0.1, data[data.length -1]]);
 
                 var div = d3.select("body").append("div")
                     .attr("class", "tooltip")
@@ -296,7 +289,6 @@ function componentBarPlotCm(fields) {
                     .attr('x', '-8')
                     .attr("transform", "rotate(-60)")
                     .attr('text-anchor', 'end')
-                // .attr('dy', '.35em')
 
 
                 xaxis.append('text')
@@ -334,12 +326,6 @@ function componentBarPlotCm(fields) {
                         return y(d[option]);
                     })
                     .attr('fill', function (d, i) {
-                        // if (i > 0) {
-                        //     //If lastmaterial number is same as new one set sameAsLast to true 
-                        //     if (data[i - 1]['MaterialNo'] == d['MaterialNo']) {
-                        //         return getRandomColor();
-                        //     }
-                        // }
                         return getRandomColor();
                     })
                     .attr('width', x.bandwidth())
@@ -401,10 +387,6 @@ function generalScatterPlotMileage(fields) {
                     str += `<th style='width: ${length}px'> ${k}</th>`;
                 })
                 $("#data-table-thead").append(str + "</tr>");
-
-                // data = data.sort(function (a, b) {
-                //     return +a['MeanMileage'] - +b['MeanMileage'];
-                // });
                 data.forEach(function (d, i) {
                     d['MeanMileage'] = +d['MeanMileage'];
                     str = `<tr class='data${i}'><td>${i + 1}</td>`
@@ -507,8 +489,6 @@ function generalScatterPlotMileage(fields) {
                         var className = $(this).attr('class');
                         removeHighlight(className.split(" ")[1]);
                     })
-                // $('.result-div').append(`<h5 style="text-align:center">Sorted on <span style="font-size: 16px; color:red">MeanMileage</span> in <strong>ascending order</strong></h5>`);
-
                 $('[class^=data]').on('mouseover', function () {
                     var className = $(this).attr('class');
                     highlightData(className.split(" "));
@@ -633,12 +613,6 @@ function componentBarPlotMttfAll(fields) {
                     })
                     .attr('fill', function (d, i) {
                         return getRandomColor();
-                        // if (i > 0) {
-                        //     //If lastmaterial number is same as new one set sameAsLast to true 
-                        //     if (data[i - 1]['MaterialNo'] == d['MaterialNo']) {
-                        //         return getRandomColor();
-                        //     }
-                        // }
                     })
                     .attr('width', x.bandwidth())
                     .attr('height', function (d, i) {
@@ -797,12 +771,6 @@ function componentBarPlotMttfCritical(fields) {
                         return y(d['MTTF']);
                     })
                     .attr('fill', function (d, i) {
-                        // if (i > 0) {
-                        //     //If lastmaterial number is same as new one set sameAsLast to true 
-                        //     if (data[i - 1]['MaterialNo'] == d['MaterialNo']) {
-                        //         return getRandomColor();
-                        //     }
-                        // }
                         return getRandomColor();
                     })
                     .attr('width', x.bandwidth())
@@ -1023,7 +991,7 @@ function componentBarPlotCritical(fields) {
             } else {
 
                 var option = fields[2] == '2' ? "TotCost" : "TotQuant";
-   
+
                 var headers = data[0];
                 data = data.sort(function (a, b) {
                     return a[option] - b[option];
@@ -1126,13 +1094,6 @@ function componentBarPlotCritical(fields) {
                         return y(d[option]);
                     })
                     .attr('fill', function (d, i) {
-                        // if (i > 0) {
-                        //     //If lastmaterial number is same as new one set sameAsLast to true 
-                        //     if (data[i - 1]['MaterialNo'] == d['MaterialNo']) {
-                        //         return getRandomColor();
-                        //     }
-                        // }
-
                         return getRandomColor();
                     })
                     .attr('width', x.bandwidth())
@@ -1194,7 +1155,7 @@ function pmTracking(fields) {
                 $('.result-div').height($('div.row.main-body').height());
                 $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
                 $('#data-table-tbody').height($('.result-div').height());
-  
+
                 //Create array
                 var records = pm_and_cm_TrackingHelperCreateArray(data);
 
@@ -1493,12 +1454,6 @@ function costing(fields) {
                         return y(d[option]);
                     })
                     .attr('fill', function (d, i) {
-                        // if (i > 0) {
-                        //     //If lastmaterial number is same as new one set sameAsLast to true 
-                        //     if (data[i - 1]['Cost Type'] == d['Cost Type']) {
-                        //         return getRandomColor();
-                        //     }
-                        // }
                         return getRandomColor();
                     })
                     .attr('width', x.bandwidth())
@@ -1624,8 +1579,6 @@ function technicians(fields) {
                         return 'rect data' + i;
                     })
                     .attr("height", function (d) {
-                        // debugger
-                        // console.log(d[0] + " " + d[1])
                         return y(d[0]) - y(d[1]);
                     })
                     .attr("width", x.bandwidth())
@@ -1751,14 +1704,9 @@ function ive(fields) {
                 $('.result-div').height($('div.row.main-body').height());
                 $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
                 $('#data-table-tbody').height($('.result-div').height());
-   
+
                 //Create array
                 var data = iveHelper(data);
-                console.log(data)
-                // data.sort(function (a, b) {
-                //     return a.Acc_Mileage - b.Acc_Mileage;
-                // })
-
                 var headers = data[0];
                 var str = "<tr><th>#</th>";
                 var length = $('#data-table-tbody').width() / Object.keys(headers).length;
@@ -1886,7 +1834,6 @@ function ive(fields) {
                     removeHighlight(className.split(" ")[0]);
                 })
 
-
                 //This is the accessor function we talked about above
                 var lineFunction = d3.line()
                     .x(function (d) {
@@ -1935,7 +1882,6 @@ function vehicleGrouping(fields) {
                     })
                     $("#data-table-tbody").append(str + "</tr>");
                 });
-                console.log(data)
                 var svg = d3.select("svg"),
                     margin = {
                         top: 20,
@@ -2080,7 +2026,7 @@ function cmTracking(fields) {
                 $('.result-div').height($('div.row.main-body').height());
                 $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
                 $('#data-table-tbody').height($('.result-div').height());
-         
+
                 //Create array
                 var records = pm_and_cm_TrackingHelperCreateArray(data);
 
@@ -2394,9 +2340,8 @@ function removeHighlight(className) {
 
 function addScrollableIfWindowIsLarge(className) {
     //$('.device-' + 'lg').is(':visible') || $('.device-' + 'md').is(':visible')
-    console.log('scrollable')
+    //Below 768 the window has mobile/tablet view.
     if (window.innerWidth > 767) {
-        console.log('if scrollable')
         $(`#data-table-tbody tr.${className}`)[0].scrollIntoView();
     }
 }
