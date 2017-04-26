@@ -22,7 +22,6 @@
     <script src="js/cbpc.js"></script>
     <script src="js/cspa.js"></script>
     <script src="js/pmt.js"></script>
-    <script src="js/association.js"></script>
     <script src="js/cmtracking.js"></script>
     <script src="js/costing.js"></script>
     <script src="js/ive.js"></script>
@@ -30,10 +29,13 @@
     <script src="js/vehiclegrouping.js"></script>
     <script src="js/saAll.js"></script>
     <script src="js/saBatch.js"></script>
-
 </head>
 
 <body>
+    <div class="device-xs visible-xs"></div>
+    <div class="device-sm visible-sm"></div>
+    <div class="device-md visible-md"></div>
+    <div class="device-lg visible-lg"></div>
     <nav class="nav main-nav">
         <span class="btn btn-default" id="menu-button">MENU</span>
         <!--<button class="btn btn-default">Menu</button>-->
@@ -94,12 +96,10 @@
         <li id='cmTracking-menuitem'>
             CM Tracking
         </li>
-        <li id='association-menuitem'>
-            Association
-        </li>
     </ul>
-    <div class="row text-center"><span id="formName-header" style="    font-size: 32px;
-    color: #777777;">component-scatter-plot-all </span></div>
+    <div class="row text-center"><span id="formName-header" style="font-size: 32px;
+    color: #777777;">component-scatter-plot-all </span>
+    </div>
 
     <div class="row main-body">
         <div class="col-sm-2 input-forms">
@@ -256,24 +256,7 @@
                 </div>
                 <input type="submit" class="btn btn-default" value="Submit" />
             </form>
-            <!--survival analysis form-->
-            <form id="survivalAnalysis-form" onsubmit="return false;">
 
-                <div class="form-group">
-                    <label for="materialNumber-survivalAnalysis" class="col-2 col-form-label">Material Number</label>
-                    <input class="form-control" type="number" value="6506129" id="materialNumber-survivalAnalysis" min=1 required>
-                </div>
-                <div class="form-group">
-                    <label for="category-survivalAnalysis" class="col-2 col-form-label">Category</label>
-                    <select id="category-survivalAnalysis" class="form-control">
-                        <option value="All" selected="true">All</option>
-                        <option value="Batch">Batch</option>
-                        <option value="Daily">Daily Mileage</option>
-                        <option value="PM">PM Adherence</option>
-                    </select>
-                </div>
-                <input type="submit" class="btn btn-default" value="Submit" />
-            </form>
             <!--costing form-->
             <form id="costing-form" onsubmit="return false;">
                 <div class="form-group">
@@ -359,7 +342,8 @@
                 <input type="submit" class="btn btn-default" value="Submit" />
             </form>
         </div>
-        <div style="outline: 1px solid black;" class="col-sm-6 result-div"></div>
+        <div style="outline: 1px solid black;" class="col-sm-6 result-div">
+        </div>
         <div class="col-sm-4 data-table" style="font-size: 11px; padding: 0;">
             <table class="table table-responsive " id="dataTable">
                 <thead id="data-table-thead">
@@ -380,6 +364,17 @@
         this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is help.
         Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is help. Hello this is
         help. Hello this is help. Hello this is help. Hello this is help. Hello this is help.
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="loadingModal" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div id="loader"></div>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="js/script.js"></script>
 </body>

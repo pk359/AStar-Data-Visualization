@@ -3,8 +3,18 @@ $('#help-content').hide();
 formDisplayer('componentScatterPlotAll');
 $('.start_date').val('2013-04-21');
 $('.end_date').val('2014-12-02');
-$('.result-div').height($('.input-forms').height() * 1.61);
+// $('.result-div').height($('.input-forms').height() * 1.61);
+
 $(function () {
+    $(document).ajaxStart(function () {
+        $('#loadingModal').modal({
+            keyboard: false,
+            backdrop: 'static'
+        })
+    });
+    $(document).ajaxComplete(function () {
+        $('#loadingModal').modal('toggle')
+    });
     $('#menu-button').click(function () {
         adjustMenuBar();
     });
@@ -31,10 +41,12 @@ $(function () {
     var fields;
     $('form').submit(function (event) {
         event.preventDefault();
-        $('.result-div').empty();
+
         $('#data-table-tbody').empty();
         $('#data-table-thead').empty();
 
+        $('.result-div').empty();
+        $('.result-div').height($('div.row.main-body').height());
         $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
         $('#data-table-tbody').height($('.result-div').height());
 
@@ -79,8 +91,10 @@ function componentScatterPlotAll(fields) {
     var data = cspa;
     var headers = data[0];
     var str = "<tr><th>#</th>";
+
+    var length = $('#data-table-tbody').width() / Object.keys(headers).length;
     Object.keys(headers).forEach(function (k) {
-        str += "<th>" + k + "</th>";
+        str += `<th style='width: ${length}px'> ${k}</th>`;
     })
     $("#data-table-thead").append(str + "</tr>");
     data = data.sort(function (a, b) {
@@ -90,12 +104,10 @@ function componentScatterPlotAll(fields) {
         d[option] = +d[option];
         str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
-            str += "<td>" + d[k] + "</td>";
+            str += `<td style='width: ${length}px'> ${d[k]} </td>`;
         })
         $("#data-table-tbody").append(str + "</tr>");
     });
-
-    adjustTableHeaderWidth();
 
     var svg = d3.select("svg"),
         margin = {
@@ -189,8 +201,7 @@ function componentScatterPlotAll(fields) {
 
             var className = $(this).attr('class');
             highlightData(className.split(" ")[1]);
-            //$(`#data-table-tbody tr.${className.split(" ")[1]}`)[0].scrollIntoView();
-
+            addScrollableIfWindowIsLarge(className.split(" ")[1]);
         })
         .on('mouseout', function () {
             div.transition()
@@ -225,8 +236,9 @@ function componentBarPlotCm(fields) {
     var data = cbpc;
     var headers = data[0];
     var str = "<tr><th>#</th>";
+    var length = $('#data-table-tbody').width() / Object.keys(headers).length;
     Object.keys(headers).forEach(function (k) {
-        str += "<th>" + k + "</th>";
+        str += `<th style='width: ${length}px'> ${k}</th>`;
     })
     $("#data-table-thead").append(str + "</tr>");
 
@@ -237,7 +249,7 @@ function componentBarPlotCm(fields) {
         d[option] = +d[option];
         str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
-            str += "<td>" + d[k] + "</td>";
+            str += `<td style='width: ${length}px'>${d[k]}</td>`;
         })
         $("#data-table-tbody").append(str + "</tr>");
     });
@@ -354,8 +366,7 @@ function componentBarPlotCm(fields) {
 
             var className = $(this).attr('class');
             highlightData(className.split(" ")[1]);
-            //$(`#data-table-tbody tr.${className.split(" ")[1]}`)[0].scrollIntoView();
-
+            addScrollableIfWindowIsLarge(className.split(" ")[1]);
         })
         .on('mouseout', function () {
             div.transition()
@@ -389,8 +400,9 @@ function generalScatterPlotMileage(fields) {
     var data = gmData;
     var headers = data[0];
     var str = "<tr><th>#</th>";
+    var length = $('#data-table-tbody').width() / Object.keys(headers).length;
     Object.keys(headers).forEach(function (k) {
-        str += "<th>" + k + "</th>";
+        str += `<th style='width: ${length}px'> ${k}</th>`;
     })
     $("#data-table-thead").append(str + "</tr>");
 
@@ -401,7 +413,7 @@ function generalScatterPlotMileage(fields) {
         d['MeanMileage'] = +d['MeanMileage'];
         str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
-            str += "<td>" + d[k] + "</td>";
+            str += `<td style='width: ${length}px'>${d[k]}</td>`;
         })
         $("#data-table-tbody").append(str + "</tr>");
     });
@@ -489,7 +501,7 @@ function generalScatterPlotMileage(fields) {
 
             var className = $(this).attr('class');
             highlightData(className.split(" ")[1]);
-            //$(`#data-table-tbody tr.${className.split(" ")[1]}`)[0].scrollIntoView();
+            addScrollableIfWindowIsLarge(className.split(" ")[1]);
 
         })
         .on('mouseout', function () {
@@ -524,20 +536,21 @@ function componentBarPlotMttfAll(fields) {
     var data = cbpma;
     var headers = data[0];
 
-    var str = "<tr><th>#</th>";
-    Object.keys(headers).forEach(function (k) {
-        str += "<th>" + k + "</th>";
-    })
-    $("#data-table-thead").append(str + "</tr>");
-
     data = data.sort(function (a, b) {
         return a['MTTF'] - b['MTTF'];
     });
+
+    var str = "<tr><th>#</th>";
+    var length = $('#data-table-tbody').width() / Object.keys(headers).length;
+    Object.keys(headers).forEach(function (k) {
+        str += `<th style='width: ${length}px'> ${k}</th>`;
+    })
+    $("#data-table-thead").append(str + "</tr>");
     data.forEach(function (d, i) {
         d['MTTF'] = +d['MTTF'];
         str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
-            str += "<td>" + d[k] + "</td>";
+            str += `<td  style='width: ${length}px'>${d[k]}</td>`;
         })
         $("#data-table-tbody").append(str + "</tr>");
     });
@@ -654,7 +667,7 @@ function componentBarPlotMttfAll(fields) {
 
             var className = $(this).attr('class');
             highlightData(className.split(" ")[1]);
-            //$(`#data-table-tbody tr.${className.split(" ")[1]}`)[0].scrollIntoView();
+            addScrollableIfWindowIsLarge(className.split(" ")[1]);
 
         })
         .on('mouseout', function () {
@@ -688,23 +701,23 @@ function componentBarPlotMttfCritical(fields) {
     //         } else {
 
     var data = cbpmc;
-
     var headers = data[0];
-
-    var str = "<tr><th>#</th>";
-    Object.keys(headers).forEach(function (k) {
-        str += "<th>" + k + "</th>";
-    })
-    $("#data-table-thead").append(str + "</tr>");
-
     data = data.sort(function (a, b) {
         return a['MTTF'] - b['MTTF'];
     });
+
+    var str = "<tr><th>#</th>";
+    var length = $('#data-table-tbody').width() / Object.keys(headers).length;
+    Object.keys(headers).forEach(function (k) {
+        str += `<th style='width: ${length}px'> ${k}</th>`;
+    })
+    $("#data-table-thead").append(str + "</tr>");
+
     data.forEach(function (d, i) {
         d['MTTF'] = +d['MTTF'];
         str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
-            str += "<td>" + d[k] + "</td>";
+            str += `<td style='width: ${length}px'>${d[k]}</td>`;
         })
         $("#data-table-tbody").append(str + "</tr>");
     });
@@ -820,7 +833,7 @@ function componentBarPlotMttfCritical(fields) {
 
             var className = $(this).attr('class');
             highlightData(className.split(" ")[1]);
-            //$(`#data-table-tbody tr.${className.split(" ")[1]}`)[0].scrollIntoView();
+            addScrollableIfWindowIsLarge(className.split(" ")[1]);
 
         })
         .on('mouseout', function () {
@@ -857,21 +870,22 @@ function componentBarPlotAll(fields) {
     var data = cbpa;
     var option = fields[2] == '2' ? "TotCost" : "TotQuant";
     var headers = data[0];
-
-    var str = "<tr><th>#</th>";
-    Object.keys(headers).forEach(function (k) {
-        str += "<th>" + k + "</th>";
-    })
-    $("#data-table-thead").append(str + "</tr>");
-
     data = data.sort(function (a, b) {
         return a[option] - b[option];
     });
+
+    var str = "<tr><th>#</th>";
+    var length = $('#data-table-tbody').width() / Object.keys(headers).length;
+    Object.keys(headers).forEach(function (k) {
+        str += `<th style='width: ${length}px'> ${k}</th>`;
+    })
+    $("#data-table-thead").append(str + "</tr>");
+
     data.forEach(function (d, i) {
         d[option] = +d[option];
         str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
-            str += "<td>" + d[k] + "</td>";
+            str += `<td style='width: ${length}px'> ${d[k]}</td>`;
         })
         $("#data-table-tbody").append(str + "</tr>");
     });
@@ -988,7 +1002,7 @@ function componentBarPlotAll(fields) {
 
             var className = $(this).attr('class');
             highlightData(className.split(" ")[1]);
-            //$(`#data-table-tbody tr.${className.split(" ")[1]}`)[0].scrollIntoView();
+            addScrollableIfWindowIsLarge(className.split(" ")[1]);
 
         })
         .on('mouseout', function () {
@@ -1024,21 +1038,21 @@ function componentBarPlotCritical(fields) {
     var option = fields[2] == '2' ? "TotCost" : "TotQuant";
     var data = cbpc;
     var headers = data[0];
-
-    var str = "<tr><th>#</th>";
-    Object.keys(headers).forEach(function (k) {
-        str += "<th>" + k + "</th>";
-    })
-    $("#data-table-thead").append(str + "</tr>");
-
     data = data.sort(function (a, b) {
         return a[option] - b[option];
     });
+    var str = "<tr><th>#</th>";
+    var length = $('#data-table-tbody').width() / Object.keys(headers).length;
+    Object.keys(headers).forEach(function (k) {
+        str += `<th style='width: ${length}px'> ${k}</th>`;
+    })
+    $("#data-table-thead").append(str + "</tr>");
+
     data.forEach(function (d, i) {
         d[option] = +d[option];
         str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
-            str += "<td>" + d[k] + "</td>";
+            str += `<td style='width: ${length}px'> ${d[k]}</td>`;
         })
         $("#data-table-tbody").append(str + "</tr>");
     });
@@ -1156,7 +1170,7 @@ function componentBarPlotCritical(fields) {
 
             var className = $(this).attr('class');
             highlightData(className.split(" ")[1]);
-            //$(`#data-table-tbody tr.${className.split(" ")[1]}`)[0].scrollIntoView();
+            addScrollableIfWindowIsLarge(className.split(" ")[1]);
 
         })
         .on('mouseout', function () {
@@ -1182,252 +1196,20 @@ function componentBarPlotCritical(fields) {
 
 function pmTracking(fields) {
 
-    var url = `http://10.217.163.124:8080/api/pm-tracking?registration-batch-year=${fields[0]}&daily-mileage=${fields[1]}`;
-    $.getJSON(url)
-        .done(function (data) {
-
-            if (data.length <= 0) {
-                alert("No data available")
-            } else {
-
-                $('.result-div').height($('.result-div').height());
-                // var data = pmt;
-                //Create array
-                var records = pmTrackingHelperCreateArray(data);
-
-                var svg = d3.select("svg"),
-                    margin = {
-                        top: 20,
-                        right: 20,
-                        bottom: 50,
-                        left: 40
-                    },
-                    width = +svg.attr("width") - margin.left - margin.right,
-                    height = +svg.attr("height") - margin.top - margin.bottom;
-
-
-
-                var x = d3.scaleLinear().rangeRound([0, width]);
-                var y = d3.scaleLinear().rangeRound([height, 0]);
-
-                var color = d3.scaleLinear().domain([0, records.length])
-                    .interpolate(d3.interpolateHcl)
-                    .range([d3.rgb("#007AFF"), d3.rgb('#FFF500')]);
-
-                var maxJobIndex = d3.max(records, function (c) {
-                    return d3.max(c.values, function (v) {
-                        return v.Job_Index;
-                    });
-                });
-                var maxAccMileage = d3.max(records, function (c) {
-                    return d3.max(c.values, function (v) {
-                        return v.Acc_Mileage;
-                    });
-                });
-
-                x.domain([
-                    d3.min(records, function (c) {
-                        return d3.min(c.values, function (v) {
-                            return v.Acc_Mileage;
-                        });
-                    }),
-                    maxAccMileage
-                ]);
-
-
-                y.domain([
-                    0,
-                    // d3.min(stocks, function(c) { return d3.min(c.values, function(v) { return v.close; }); }),
-                    maxJobIndex
-                ]);
-
-                var div = d3.select("body").append("div")
-                    .attr("class", "tooltip")
-                    .style("opacity", 0);
-
-
-                // set the line attributes
-                var line = d3.line()
-                    .x(function (d) {
-                        return x(d.Acc_Mileage);
-                    })
-                    .y(function (d) {
-                        return y(d.Job_Index);
-                    });
-
-
-                var g = svg.append("g")
-                    .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
-
-
-                // add the x axis
-                var xaxis = g.append("g")
-                    .attr("class", "x axis")
-                    .style('font-size', '8px')
-                    .attr("transform", "translate(0," + height + ")")
-                    .call(d3.axisBottom(x));
-                xaxis.selectAll("text")
-                    .attr('x', '-8')
-                    .attr("transform", "rotate(-60)")
-                    .attr('text-anchor', 'end')
-
-                xaxis.append('text')
-                    .attr('fill', '#000')
-                    .style('font-size', '12px')
-                    .attr('transform', 'translate(' + width / 2 + ',' + margin.bottom + ')')
-                    .text('Acc_Mileage');
-
-                //For Y axis
-                g.append('g')
-                    .attr('class', 'y axis')
-                    .call(d3.axisLeft(y))
-                    .append("text")
-                    .attr('transform', 'translate(-' + margin.left + ',' + height / 2 + ')rotate(-90)')
-                    .attr('dy', '0.71em')
-                    .attr('fill', '#000')
-                    .text('Job Index');
-
-                // add the line groups
-                var paths = g.selectAll(".pmTracking")
-                    .data(records)
-                    .enter().append("g")
-                    .attr("class", "pmTracking");
-
-                // add  paths
-                paths.append("path")
-                    .attr("class", "line")
-                    .attr("id", function (d, i) {
-                        return "id" + i;
-                    })
-                    .attr("d", function (d) {
-                        return line(d.values);
-                    })
-                    .attr("stroke-width", "2")
-                    .attr("fill", "none")
-                    .style("stroke", function (d, i) {
-                        return color(i);
-                    });
-
-                var countOfDots = 0;
-                var TDwidth = $('#data-table-tbody').width()/5;
-                $("#data-table-thead").append(`
-        <th width='${TDwidth}'>#</th>
-       <th width='${TDwidth}'>JobIndex</th>
-        <th width='${TDwidth}'>Mileage</th>
-         <th width='${TDwidth}'>VehNum</th>
-        <th width='${TDwidth}>VehID</th>
-        `)
-                var tbody = ``;
-                records.forEach(function (d, key) {
-                    var vehNum = d.VehNum;
-                    var vehID = d.VehID;
-                    //Add data to table
-
-                    d.values.forEach(function (k, i) {
-                        $("#data-table-tbody").append(`<tr class='data${i + countOfDots}'>
-                <td width='${TDwidth}'>${i + countOfDots + 1}</td>
-                 <td width='${TDwidth}'>${k.Job_Index}</td>
-                <td width='${TDwidth}'>${k.Acc_Mileage}</td>
-                <td width='${TDwidth}'>${vehNum}</td>
-                <td width='${TDwidth}'>${vehID}</td>
-            </tr>`);
-
-                    })
-                    //Create dots
-                    g.selectAll('.circle')
-                        .data(d.values)
-                        .enter().append('circle')
-                        .attr('class', function (k, i) {
-                            return "data" + (i + countOfDots);
-                        })
-                        .attr('style', 'cursor:pointer')
-                        .attr('fill', getRandomColor())
-                        .attr('cx', function (pair) {
-                            return x(pair.Acc_Mileage);
-                        })
-                        .attr('cy', function (pair) {
-                            return y(pair.Job_Index);
-
-                        })
-                        .attr('r', 3)
-                        .on('mouseover', function (d, i) {
-                            div.transition()
-                                .duration(200)
-                                .style("opacity", .9);
-                            div.html(`<strong>VehNum:</strong><span style='color:blue'>${vehNum}</span><br>
-                        <strong>Acc_Mileage:</strong> <span style='color:red'>${d.Acc_Mileage}</span><br>
-                        <strong>JobIndex:</strong> <span style='color:red'>${d.Job_Index}</span>`)
-                                .style("left", (d3.event.pageX) + "px")
-                                .style("top", (d3.event.pageY - 28) + "px")
-
-                            var className = $(this).attr('class');
-                            highlightData(className.split(" ")[1]);
-                            $(`#data-table-tbody tr.${className}`)[0].scrollIntoView();
-                        })
-                        .on('mouseout', function () {
-                            div.transition()
-                                .duration(500)
-                                .style("opacity", 0);
-                            var className = $(this).attr('class');
-                            removeHighlight(className.split(" ")[1]);
-                        });
-                    countOfDots += d.values.length;
-                })
-                $('[class^=data]').on('mouseover', function () {
-                    var className = $(this).attr('class');
-                    highlightData(className.split(" "));
-                })
-                $('[class^=data]').on('mouseout', function () {
-                    var className = $(this).attr('class');
-                    removeHighlight(className.split(" ")[0]);
-                })
-                // console.log(records);
-
-
-            }
-        });
-
-}
-
-function survivalAnalysis(fields) {
-    // var url = `http://10.217.163.77:8080/api/component-bar-plot-critical?start-date=${fields[0]}&end-date=${fields[1]}&option=${fields[2]}&no-of-rows=${fields[3]}`;
+    // var url = `http://10.217.163.124:8080/api/pm-tracking?registration-batch-year=${fields[0]}&daily-mileage=${fields[1]}`;
     // $.getJSON(url)
     //     .done(function (data) {
+
     //         if (data.length <= 0) {
     //             alert("No data available")
     //         } else {
-
-    var data = fields[1] === 'All' ? saAll : saBatch;
-    var records = []
-    if (fields[1] === 'All') {
-        records = survivalAnalysisHelperAll(data);
-
-    } else {
-        records = survivalAnalysisHelperNotAll(data)
-
-    }
-
-
-    var headers = data[0];
-    var str = "<tr><th>#</th>";
-    var length = Object.keys(headers).length;
-    Object.keys(headers).forEach(function (k) {
-        str += `<th width='${$('#data-table-tbody').width()/length}'> ${k}</th>`;
-    })
-
-    records.forEach(function (d, i) {
-        d.values.sort(function (a, b) {
-            return a.x - b.x;
-        })
-        str = `<tr class='data${i}'><td>${i + 1}</td><td width='${$('#data-table-tbody').width()/length}'>`
-        d.values.forEach(function (c, k) {
-            str += '<span>name: ' + d.name + ' timeline: ' + c.x + '</span><br>';
-        })
-        // Object.keys(d).forEach(function (k, i) {
-
-        // })
-        $("#data-table-tbody").append(str + "</td></tr>");
-    });
+    $('.result-div').empty();
+    $('.result-div').height($('div.row.main-body').height());
+    $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
+    $('#data-table-tbody').height($('.result-div').height());
+    var data = pmt;
+    //Create array
+    var records = pm_and_cm_TrackingHelperCreateArray(data);
 
     var svg = d3.select("svg"),
         margin = {
@@ -1439,6 +1221,8 @@ function survivalAnalysis(fields) {
         width = +svg.attr("width") - margin.left - margin.right,
         height = +svg.attr("height") - margin.top - margin.bottom;
 
+
+
     var x = d3.scaleLinear().rangeRound([0, width]);
     var y = d3.scaleLinear().rangeRound([height, 0]);
 
@@ -1446,31 +1230,31 @@ function survivalAnalysis(fields) {
         .interpolate(d3.interpolateHcl)
         .range([d3.rgb("#007AFF"), d3.rgb('#FFF500')]);
 
-    var maxY = d3.max(records, function (c) {
+    var maxJobIndex = d3.max(records, function (c) {
         return d3.max(c.values, function (v) {
-            return v.y;
+            return v.Job_Index;
         });
     });
-    var maxX = d3.max(records, function (c) {
+    var maxAccMileage = d3.max(records, function (c) {
         return d3.max(c.values, function (v) {
-            return v.x;
+            return v.Acc_Mileage;
         });
     });
 
     x.domain([
         d3.min(records, function (c) {
             return d3.min(c.values, function (v) {
-                return v.x;
+                return v.Acc_Mileage;
             });
         }),
-        maxX
+        maxAccMileage
     ]);
 
 
     y.domain([
         0,
         // d3.min(stocks, function(c) { return d3.min(c.values, function(v) { return v.close; }); }),
-        maxY
+        maxJobIndex
     ]);
 
     var div = d3.select("body").append("div")
@@ -1481,11 +1265,11 @@ function survivalAnalysis(fields) {
     // set the line attributes
     var line = d3.line()
         .x(function (d) {
-            return x(d.x);
+            return x(d.Acc_Mileage);
         })
         .y(function (d) {
-            return y(d.y);
-        })
+            return y(d.Job_Index);
+        });
 
 
     var g = svg.append("g")
@@ -1507,7 +1291,7 @@ function survivalAnalysis(fields) {
         .attr('fill', '#000')
         .style('font-size', '12px')
         .attr('transform', 'translate(' + width / 2 + ',' + margin.bottom + ')')
-        .text('x');
+        .text('Acc_Mileage');
 
     //For Y axis
     g.append('g')
@@ -1527,9 +1311,9 @@ function survivalAnalysis(fields) {
 
     // add  paths
     paths.append("path")
-        .attr('class', 'line')
+        .attr("class", "line")
         .attr("id", function (d, i) {
-            return "line_" + i;
+            return "id" + i;
         })
         .attr("d", function (d) {
             return line(d.values);
@@ -1538,43 +1322,87 @@ function survivalAnalysis(fields) {
         .attr("fill", "none")
         .style("stroke", function (d, i) {
             return color(i);
-        })
-        .on("mouseover", function (d) {
-            d3.select(this).style("stroke-width", 4);
-            div.transition()
-                .duration(200)
-                .style("opacity", .9);
-            div.html(`
-                        <strong>Name:</strong> <span style='color:red'>${d.name}</span>`)
-                .style("left", (d3.event.pageX) + "px")
-                .style("top", (d3.event.pageY - 28) + "px");
-            var lineId = $(this).attr('id').split("_")[1];
-            highlightData("data" + lineId);
-            $(`#data-table-tbody tr.${"data" + lineId}`)[0].scrollIntoView();
-        })
-        .on("mouseout", function () {
-            d3.select(this).style("stroke-width", 2);
-            div.transition()
-                .duration(500)
-                .style("opacity", 0);
-            var lineId = $(this).attr('id').split("_")[1];
-            removeHighlight("data" + lineId);
         });
 
+    var countOfDots = 0;
+    var TDwidth = $('#data-table-tbody').width() / 5;
+    $("#data-table-thead").append(`
+        <th>#</th>
+       <th width='${TDwidth}'>JobIndex</th>
+        <th width='${TDwidth}'>Mileage</th>
+         <th width='${TDwidth}'>VehNum</th>
+        <th width='${TDwidth}'>VehID</th>
+        `)
+    var tbody = ``;
+    records.forEach(function (d, key) {
+        var vehNum = d.VehNum;
+        var vehID = d.VehID;
+        //Add data to table
+
+        d.values.forEach(function (k, i) {
+            $("#data-table-tbody").append(`<tr class='data${i + countOfDots}'>
+                <td>${i + countOfDots + 1}</td>
+                 <td width='${TDwidth}'>${k.Job_Index}</td>
+                <td width='${TDwidth}'>${k.Acc_Mileage}</td>
+                <td width='${TDwidth}'>${vehNum}</td>
+                <td width='${TDwidth}'>${vehID}</td>
+            </tr>`);
+
+        })
+        //Create dots
+        g.selectAll('.circle')
+            .data(d.values)
+            .enter().append('circle')
+            .attr('class', function (k, i) {
+                return "data" + (i + countOfDots);
+            })
+            .attr('style', 'cursor:pointer')
+            .attr('fill', getRandomColor())
+            .attr('cx', function (pair) {
+                return x(pair.Acc_Mileage);
+            })
+            .attr('cy', function (pair) {
+                return y(pair.Job_Index);
+
+            })
+            .attr('r', 3)
+            .on('mouseover', function (d, i) {
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                div.html(`<strong>VehNum:</strong><span style='color:blue'>${vehNum}</span><br>
+                        <strong>Acc_Mileage:</strong> <span style='color:red'>${d.Acc_Mileage}</span><br>
+                        <strong>JobIndex:</strong> <span style='color:red'>${d.Job_Index}</span>`)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px")
+
+                var className = $(this).attr('class');
+                highlightData(className.split(" ")[1]);
+                addScrollableIfWindowIsLarge(className);
+            })
+            .on('mouseout', function () {
+                div.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+                var className = $(this).attr('class');
+                removeHighlight(className.split(" ")[1]);
+            });
+        countOfDots += d.values.length;
+    })
     $('[class^=data]').on('mouseover', function () {
-        var classID = $(this).attr('class').split("data")[1];
-        $('#line' + classID).attr("stroke", 'yellow');
-        $('#line' + classID).attr('stroke-width', '+4');
-        //d3.select('#line'+classID).style({"stroke": 'yellow', 'stroke-width': 4});
+        var className = $(this).attr('class');
+        highlightData(className.split(" "));
     })
     $('[class^=data]').on('mouseout', function () {
-        var classID = $(this).attr('class').split("data")[1];
-        $('#line' + classID).attr("stroke", color(classID));
-        $('#line' + classID).attr('stroke-width', '+2');
+        var className = $(this).attr('class');
+        removeHighlight(className.split(" ")[0]);
     })
+    // console.log(records);
 
-    // }
+
+    //     }
     // });
+
 }
 
 function costing(fields) {
@@ -1588,20 +1416,21 @@ function costing(fields) {
     var option = "Value";
     var data = costingData;
     var headers = data[0];
-    var str = "<tr><th>#</th>";
-    Object.keys(headers).forEach(function (k) {
-        str += "<th>" + k + "</th>";
-    })
-    $("#data-table-thead").append(str + "</tr>");
-
     data = data.sort(function (a, b) {
         return a[option] - b[option];
     });
+    var str = "<tr><th>#</th>";
+    var length = $('#data-table-tbody').width() / Object.keys(headers).length;
+    Object.keys(headers).forEach(function (k) {
+        str += `<th style='width: ${length}px'> ${k}</th>`;
+    })
+    $("#data-table-thead").append(str + "</tr>");
+
     data.forEach(function (d, i) {
         d[option] = +d[option];
         str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
-            str += "<td>" + d[k] + "</td>";
+            str += `<td style='width: ${length}px'> ${d[k]}</td>`;
         })
         $("#data-table-tbody").append(str + "</tr>");
     });
@@ -1616,7 +1445,6 @@ function costing(fields) {
         },
         width = +svg.attr("width") - margin.left - margin.right,
         height = +svg.attr("height") - margin.top - margin.bottom;
-
 
     var x = d3.scaleBand().rangeRound([0, width]).padding(0.1);
     //y = d3.scaleLinear().rangeRound([height, 0]);
@@ -1712,8 +1540,7 @@ function costing(fields) {
 
             var className = $(this).attr('class');
             highlightData(className.split(" ")[1]);
-            //$(`#data-table-tbody tr.${className.split(" ")[1]}`)[0].scrollIntoView();
-
+            addScrollableIfWindowIsLarge(className.split(" ")[1]);
         })
         .on('mouseout', function () {
             div.transition()
@@ -1792,7 +1619,7 @@ function technicians(fields) {
     y.domain([0, maxY]).nice();
     z.domain(keys);
 
-    var count = -1;
+
     g.append("g")
         .selectAll("g")
         .data(d3.stack().keys(keys)(data))
@@ -1804,7 +1631,7 @@ function technicians(fields) {
         .data(function (d) {
             return d;
         })
-        .enter().append("rect")
+        .enter().append('rect')
         .attr("x", function (d) {
             return x(d.data.EmployeeNo);
         })
@@ -1812,8 +1639,8 @@ function technicians(fields) {
             return y(d[1]);
         })
         .attr('class', function (d, i) {
-            count++;
-            return 'rect data' + count;
+
+            return 'rect data' + i;
         })
         .attr("height", function (d) {
             // debugger
@@ -1825,7 +1652,7 @@ function technicians(fields) {
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
-            var str = `${d[i]}`;
+            var str = ``;
             var tempD = d.data;
             Object.keys(tempD).forEach(function (k, i) {
                 str += `<strong>${k}</strong> <span style='color:red'>${tempD[k]}</span><br>`
@@ -1836,7 +1663,7 @@ function technicians(fields) {
 
             var className = $(this).attr('class');
             highlightData(className.split(" ")[1]);
-            //$(`#data-table-tbody tr.${className.split(" ")[1]}`)[0].scrollIntoView();
+            addScrollableIfWindowIsLarge(className.split(" ")[1]);
 
         })
         .on('mouseout', function () {
@@ -1899,18 +1726,19 @@ function technicians(fields) {
         .text(function (d) {
             return d;
         });
+
     var headers = data[0];
     var str = "<tr><th>#</th>";
-    var length = Object.keys(headers).length;
+    var length = $('#data-table-tbody').width() / Object.keys(headers).length;
     Object.keys(headers).forEach(function (k) {
-        str += `<th width='${$('#data-table-tbody').width()/length}'> ${k}</th>`;
+        str += `<th style='width: ${length}px'> ${k}</th>`;
     })
     $("#data-table-thead").append(str + "</tr>");
-    data.forEach(function (d, i) {
 
+    data.forEach(function (d, i) {
         str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
-            str += `<td width='${$('#data-table-tbody').width()/length}'> ${d[k]} </td>`;
+            str += `<td style='width: ${length}px'> ${d[k]} </td>`;
         })
         $("#data-table-tbody").append(str + "</tr>");
     });
@@ -1925,32 +1753,40 @@ function technicians(fields) {
     })
 }
 
-function ive(fields) {
-    console.log(fields);
-}
 
-function vehicleGrouping(fields) {
-    // var url = `http://10.217.163.77:8080/api/component-bar-plot-cm?start-date=${fields[0]}&end-date=${fields[1]}&option=${fields[2]}&no-of-rows=${fields[3]}`;
+function ive(fields) {
+    // var url = `http://10.217.163.124:8080/api/pm-tracking?registration-batch-year=${fields[0]}&daily-mileage=${fields[1]}`;
     // $.getJSON(url)
     //     .done(function (data) {
+
     //         if (data.length <= 0) {
     //             alert("No data available")
     //         } else {
 
-    var option = "Count";
-    var data = vehiclegroupingData;
+    $('.result-div').empty();
+    $('.result-div').height($('div.row.main-body').height());
+    $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
+    $('#data-table-tbody').height($('.result-div').height());
+    var data = iveData;
+    //Create array
+    var data = iveHelper(data);
+    console.log(data)
+    // data.sort(function (a, b) {
+    //     return a.Acc_Mileage - b.Acc_Mileage;
+    // })
+
     var headers = data[0];
     var str = "<tr><th>#</th>";
-    var length = Object.keys(headers).length;
+    var length = $('#data-table-tbody').width() / Object.keys(headers).length;
     Object.keys(headers).forEach(function (k) {
-        str += `<th width='${$('#data-table-tbody').width()/length}'> ${k}</th>`;
+        str += `<th style='width: ${length}px'> ${k}</th>`;
     })
     $("#data-table-thead").append(str + "</tr>");
-    data.forEach(function (d, i) {
 
+    data.forEach(function (d, i) {
         str = `<tr class='data${i}'><td>${i + 1}</td>`
         Object.keys(d).forEach(function (k, i) {
-            str += `<td width='${$('#data-table-tbody').width()/length}'> ${d[k]} </td>`;
+            str += `<td style='width: ${length}px'> ${d[k]} </td>`;
         })
         $("#data-table-tbody").append(str + "</tr>");
     });
@@ -1966,7 +1802,165 @@ function vehicleGrouping(fields) {
         height = +svg.attr("height") - margin.top - margin.bottom;
 
 
-    var x = d3.scaleBand().rangeRound([0, width]);
+    var x = d3.scaleBand().rangeRound([0, width]).padding(.1);
+    var y = d3.scaleLinear().rangeRound([height, 0]);
+
+
+    x.domain(data.map(function (d, i) {
+        return d.Acc_Mileage;
+    }));
+
+    y.domain([1, d3.max(data, function (d) {
+        return d.Job_Index;
+    })]);
+
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+
+    var g = svg.append("g")
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+    var xaxis = g.append('g')
+        .attr('class', 'axis axis--x')
+        .style('font-size', '8px')
+        .attr('transform', 'translate(0,' + height + ')')
+        .call(d3.axisBottom(x));
+
+    xaxis.selectAll("text")
+        .attr('x', '-8')
+        .attr("transform", "rotate(-60)")
+        .attr('text-anchor', 'end')
+    // .attr('dy', '.35em')
+
+
+    xaxis.append('text')
+        .attr('fill', '#000')
+        .attr('transform', 'translate(' + width / 2 + ',' + margin.bottom + ')')
+        .text('Acc Mileage');
+
+    //For Y axis
+    g.append('g')
+        .attr('class', 'axis axis--y')
+        .call(d3.axisLeft(y))
+        .append("text")
+        .attr('transform', 'translate(-' + margin.left + ',' + height / 2 + ')rotate(-90)')
+        .attr('dy', '0.71em')
+        .attr('fill', '#000')
+        .text('Job Index');
+
+    g.selectAll('.circle')
+        .data(data)
+        .enter().append('circle')
+        .attr('class', function (d, i) {
+            return "circle data" + i;
+        })
+        .attr('style', 'cursor:pointer')
+        .attr('fill', function (d) {
+            return d.Contains_IVE ? "blue" : "green"
+        })
+        .attr('cx', function (d) {
+            return x(d.Acc_Mileage);
+        })
+        .attr('cy', function (d) {
+            return y(d.Job_Index)
+        })
+        .attr('r', 3)
+        .on('mouseover', function (d, i) {
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+
+            var str = ``;
+            Object.keys(d).forEach(function (k, i) {
+                str += `<strong>${k}</strong> <span style='color:red'>${d[k]}</span><br>`
+            })
+            div.html(str)
+                .style("left", (d3.event.pageX) + "px")
+                .style("top", (d3.event.pageY - 28) + "px");
+
+            var className = $(this).attr('class');
+            highlightData(className.split(" ")[1]);
+            addScrollableIfWindowIsLarge(className.split(" ")[1]);
+
+        })
+        .on('mouseout', function () {
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+            var className = $(this).attr('class');
+            removeHighlight(className.split(" ")[1]);
+        })
+
+    $('[class^=data]').on('mouseover', function () {
+        var className = $(this).attr('class');
+        highlightData(className.split(" "));
+    })
+    $('[class^=data]').on('mouseout', function () {
+        var className = $(this).attr('class');
+        removeHighlight(className.split(" ")[0]);
+    })
+
+
+    //This is the accessor function we talked about above
+    var lineFunction = d3.line()
+        .x(function (d) { return x(d.Acc_Mileage); })
+        .y(function (d) { return y(d.Job_Index); })
+    //    .curve(d3.curveBundle)
+
+    //The line SVG Path we draw
+    var lineGraph = g.append("path")
+        .attr("d", lineFunction(data))
+        .attr('class', 'line')
+        .attr("stroke", "red")
+        .attr("stroke-width", 2)
+        .attr("fill", "none");
+
+    // }
+    // });
+}
+
+function vehicleGrouping(fields) {
+    // var url = `http://10.217.163.77:8080/api/component-bar-plot-cm?start-date=${fields[0]}&end-date=${fields[1]}&option=${fields[2]}&no-of-rows=${fields[3]}`;
+    // $.getJSON(url)
+    //     .done(function (data) {
+    //         if (data.length <= 0) {
+    //             alert("No data available")
+    //         } else {
+
+    var option = "Count";
+    var data = vehiclegroupingData;
+    var headers = data[0];
+    var str = "<tr><th>#</th>";
+    var length = $('#data-table-tbody').width() / Object.keys(headers).length;
+    Object.keys(headers).forEach(function (k) {
+        str += `<th style='width: ${length}px'> ${k}</th>`;
+    })
+
+    $("#data-table-thead").append(str + "</tr>");
+    data.forEach(function (d, i) {
+        d.Count = +d.Count
+        d.Perc = +d.Perc
+        str = `<tr class='data${i}'><td>${i + 1}</td>`
+        Object.keys(d).forEach(function (k, i) {
+            str += `<td style='width: ${length}px'> ${d[k]} </td>`;
+        })
+        $("#data-table-tbody").append(str + "</tr>");
+    });
+    console.log(data)
+    var svg = d3.select("svg"),
+        margin = {
+            top: 20,
+            right: 20,
+            bottom: 60,
+            left: 50
+        },
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom;
+
+
+    var x = d3.scaleBand().rangeRound([0, width]).padding(.2);
     //y = d3.scaleLinear().rangeRound([height, 0]);
 
     var y = d3.scaleLinear()
@@ -1976,7 +1970,7 @@ function vehicleGrouping(fields) {
         return d['Group'];
     }));
 
-    y.domain([0.1, d3.max(data, function (d) {
+    y.domain([0, d3.max(data, function (d) {
         return d[option];
     })]);
     //y.domain([0.1, data[data.length -1]]);
@@ -2016,14 +2010,15 @@ function vehicleGrouping(fields) {
         .attr('fill', '#000')
         .text(option);
 
-    g.selectAll('.bar')
+    var bars = g.selectAll('.bar')
         .data(data)
-        .enter().append('rect')
+        .enter().append('g');
+    bars.append('rect')
         .attr('class', function (d, i) {
             return "bar data" + i;
         })
         .attr('x', function (d) {
-            return x(d['Cost Type']);
+            return x(d['Group']);
         })
         .attr('style', 'cursor:pointer')
         .attr('y', function (d, i) {
@@ -2040,22 +2035,23 @@ function vehicleGrouping(fields) {
         })
         .attr('width', x.bandwidth())
         .attr('height', function (d, i) {
-            return y(d[option])
+            return height - y(d[option])
         })
         .on('mouseover', function (d, i) {
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
-            div.html(`<strong>#</strong><span style='color:yellow'>${i + 1}</span><br>
-                        <strong>${option}:</strong> <span style='color:red'>${d[option]}</span><br>
-                        <strong>Group:</strong> <span style='color:red'>${d['Group']}</span>
-                        <strong>Percent:</strong> <span style='color:red'>${d['Perc'] + "%"}</span>`)
+            var str = ``;
+            Object.keys(d).forEach(function (k, i) {
+                str += `<strong>${k}</strong> <span style='color:red'>${d[k]}</span><br>`
+            })
+            div.html(str)
                 .style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY - 28) + "px");
 
             var className = $(this).attr('class');
             highlightData(className.split(" ")[1]);
-            //$(`#data-table-tbody tr.${className.split(" ")[1]}`)[0].scrollIntoView();
+            addScrollableIfWindowIsLarge(className.split(" ")[1]);
 
         })
         .on('mouseout', function () {
@@ -2065,7 +2061,12 @@ function vehicleGrouping(fields) {
             var className = $(this).attr('class');
             removeHighlight(className.split(" ")[1]);
         })
-    $('.result-div').append(`<h5 style="text-align:center">Sorted on <span style="font-size: 16px; color:red">${option}</span> in <strong>ascending order</strong></h5>`);
+
+    bars.append("text")
+        .attr("x", function (d) { return x(d.Group) + x.bandwidth() / 3; })
+        .attr("y", function (d) { return y(d.Count) - 10 })
+        .attr("dy", ".35em")
+        .text(function (d) { return "(" + d.Count + ") " + d.Perc.toFixed(2) + " %"; });
 
     $('[class^=data]').on('mouseover', function () {
         var className = $(this).attr('class');
@@ -2080,7 +2081,213 @@ function vehicleGrouping(fields) {
 }
 
 function cmTracking(fields) {
-    console.log(fields);
+    // var url = `http://10.217.163.124:8080/api/pm-tracking?registration-batch-year=${fields[0]}&daily-mileage=${fields[1]}`;
+    // $.getJSON(url)
+    //     .done(function (data) {
+
+    //         if (data.length <= 0) {
+    //             alert("No data available")
+    //         } else {
+
+    $('.result-div').empty();
+    $('.result-div').height($('div.row.main-body').height());
+    $('.result-div').append(`<svg height="${$('.result-div').height()}" width="${$('.result-div').width()}"></svg>`);
+    $('#data-table-tbody').height($('.result-div').height());
+    var data = cmtracking;
+    //Create array
+    var records = pm_and_cm_TrackingHelperCreateArray(data);
+
+    var svg = d3.select("svg"),
+        margin = {
+            top: 20,
+            right: 20,
+            bottom: 50,
+            left: 40
+        },
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom;
+
+
+
+    var x = d3.scaleLinear().rangeRound([0, width]);
+    var y = d3.scaleLinear().rangeRound([height, 0]);
+
+    var color = d3.scaleLinear().domain([0, records.length])
+        .interpolate(d3.interpolateHcl)
+        .range([d3.rgb("#007AFF"), d3.rgb('#FFF500')]);
+
+    var maxJobIndex = d3.max(records, function (c) {
+        return d3.max(c.values, function (v) {
+            return v.Job_Index;
+        });
+    });
+    var maxAccMileage = d3.max(records, function (c) {
+        return d3.max(c.values, function (v) {
+            return v.Acc_Mileage;
+        });
+    });
+
+    x.domain([
+        d3.min(records, function (c) {
+            return d3.min(c.values, function (v) {
+                return v.Acc_Mileage;
+            });
+        }),
+        maxAccMileage
+    ]);
+
+
+    y.domain([
+        0,
+        // d3.min(stocks, function(c) { return d3.min(c.values, function(v) { return v.close; }); }),
+        maxJobIndex
+    ]);
+
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+
+    // set the line attributes
+    var line = d3.line()
+        .x(function (d) {
+            return x(d.Acc_Mileage);
+        })
+        .y(function (d) {
+            return y(d.Job_Index);
+        });
+
+
+    var g = svg.append("g")
+        .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
+
+
+    // add the x axis
+    var xaxis = g.append("g")
+        .attr("class", "x axis")
+        .style('font-size', '8px')
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+    xaxis.selectAll("text")
+        .attr('x', '-8')
+        .attr("transform", "rotate(-60)")
+        .attr('text-anchor', 'end')
+
+    xaxis.append('text')
+        .attr('fill', '#000')
+        .style('font-size', '12px')
+        .attr('transform', 'translate(' + width / 2 + ',' + margin.bottom + ')')
+        .text('Acc_Mileage');
+
+    //For Y axis
+    g.append('g')
+        .attr('class', 'y axis')
+        .call(d3.axisLeft(y))
+        .append("text")
+        .attr('transform', 'translate(-' + margin.left + ',' + height / 2 + ')rotate(-90)')
+        .attr('dy', '0.71em')
+        .attr('fill', '#000')
+        .text('Job Index');
+
+    // add the line groups
+    var paths = g.selectAll(".pmTracking")
+        .data(records)
+        .enter().append("g")
+        .attr("class", "pmTracking");
+
+    // add  paths
+    paths.append("path")
+        .attr("class", "line")
+        .attr("id", function (d, i) {
+            return "id" + i;
+        })
+        .attr("d", function (d) {
+            return line(d.values);
+        })
+        .attr("stroke-width", "2")
+        .attr("fill", "none")
+        .style("stroke", function (d, i) {
+            return color(i);
+        });
+
+    var countOfDots = 0;
+    var TDwidth = $('#data-table-tbody').width() / 4;
+    $("#data-table-thead").append(`
+        <tr><th>#</th>
+       <th width='${TDwidth}'>JobIndex</th>
+        <th width='${TDwidth}'>Mileage</th>
+         <th width='${TDwidth}'>VehNum</th>
+        <th width='${TDwidth}'>VehID</th></tr>
+        `)
+    var tbody = ``;
+    records.forEach(function (d, key) {
+        var vehNum = d.VehNum;
+        var vehID = d.VehID;
+        //Add data to table
+
+        d.values.forEach(function (k, i) {
+            $("#data-table-tbody").append(`<tr class='data${i + countOfDots}'>
+                <td>${i + countOfDots + 1}</td>
+                 <td width='${TDwidth}'>${k.Job_Index}</td>
+                <td width='${TDwidth}'>${k.Acc_Mileage}</td>
+                <td width='${TDwidth}'>${vehNum}</td>
+                <td width='${TDwidth}'>${vehID}</td>
+            </tr>`);
+
+        })
+        //Create dots
+        g.selectAll('.circle')
+            .data(d.values)
+            .enter().append('circle')
+            .attr('class', function (k, i) {
+                return "data" + (i + countOfDots);
+            })
+            .attr('style', 'cursor:pointer')
+            .attr('fill', getRandomColor())
+            .attr('cx', function (pair) {
+                return x(pair.Acc_Mileage);
+            })
+            .attr('cy', function (pair) {
+                return y(pair.Job_Index);
+
+            })
+            .attr('r', 3)
+            .on('mouseover', function (d, i) {
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                div.html(`<strong>VehNum:</strong><span style='color:blue'>${vehNum}</span><br>
+                        <strong>Acc_Mileage:</strong> <span style='color:red'>${d.Acc_Mileage}</span><br>
+                        <strong>JobIndex:</strong> <span style='color:red'>${d.Job_Index}</span>`)
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px")
+
+                var className = $(this).attr('class');
+                highlightData(className.split(" ")[1]);
+                addScrollableIfWindowIsLarge(className);
+            })
+            .on('mouseout', function () {
+                div.transition()
+                    .duration(500)
+                    .style("opacity", 0);
+                var className = $(this).attr('class');
+                removeHighlight(className.split(" ")[1]);
+            });
+        countOfDots += d.values.length;
+    })
+    $('[class^=data]').on('mouseover', function () {
+        var className = $(this).attr('class');
+        highlightData(className.split(" "));
+    })
+    $('[class^=data]').on('mouseout', function () {
+        var className = $(this).attr('class');
+        removeHighlight(className.split(" ")[0]);
+    })
+    // console.log(records);
+
+
+    //     }
+    // });
 }
 
 function techniciansHelper(data) {
@@ -2138,7 +2345,7 @@ function type(d, i, columns) {
     return d;
 }
 
-function pmTrackingHelperCreateArray(data) {
+function pm_and_cm_TrackingHelperCreateArray(data) {
 
     var newData = []
     data.forEach(function (d) {
@@ -2163,117 +2370,22 @@ function pmTrackingHelperCreateArray(data) {
     return newData;
 }
 
-//Create new array of points for Survival Analysis
-function survivalAnalysisHelperAll(data) {
-    var pathsJSON = []
+function iveHelper(data) {
+    var newData = []
 
-    var avlc = {
-        name: "All vehicle, all cause",
-        values: []
-    }
-    var avlcLower = {
-        name: "All vehicle, all cause_lower_0.95",
-        values: []
-    }
-    var avlcUpper = {
-        name: "All vehicle, all cause_upper_0.95",
-        values: []
-    }
+    var d = data[0];
+    var Acc_Mileage = JSON.parse(d.Acc_Mileage);
+    var Contains_IVE = JSON.parse(d.Contains_IVE);
+    var Job_Index = JSON.parse(d.Job_Index);
 
-    data.forEach(function (d) {
-        if (Object.keys(d).length == 2) {
-            avlc.values.push({
-                y: +d["All vehicle, all cause"],
-                x: +d["timeline"]
-            });
-            avlcLower.values.push({
-                y: +d["All vehicle, all cause"],
-                x: +d["timeline"]
-            });
-            avlcUpper.values.push({
-                y: +d["All vehicle, all cause"],
-                x: +d["timeline"]
-            });
-        } else {
-            avlc.values.push({
-                y: d["All vehicle, all cause"],
-                x: +d["timeline"]
-            });
-            avlcLower.values.push({
-                y: +d[`All vehicle, all cause_lower_0.95`],
-                x: +d["timeline"]
-            });
-            avlcUpper.values.push({
-                y: +d[`All vehicle, all cause_upper_0.95`],
-                x: +d["timeline"]
-            });
-        }
+    Acc_Mileage.forEach(function (k, i) {
+        newData.push({
+            Acc_Mileage: k.toFixed(2),
+            Contains_IVE: +Contains_IVE[i],
+            Job_Index: +Job_Index[i],
+        })
     })
-    pathsJSON.push(avlc, avlcLower, avlcUpper);
-    return pathsJSON;
-}
-//Create new array of points for Survival Analysis
-function survivalAnalysisHelperNotAll(data) {
-    var pathsJSON = []
-
-    var earlier = {
-        name: "Earlier batch (BA.1+BA.2)",
-        values: []
-    }
-    var eLower = {
-        name: "Earlier batch (BA.1+BA.2)_lower_0.95",
-        values: []
-    }
-    var eUpper = {
-        name: "Earlier batch (BA.1+BA.2)_upper_0.95",
-        values: []
-    }
-
-    var later = {
-        name: "Later batch (BA.3+BA.4)",
-        values: []
-    }
-
-    data.forEach(function (d) {
-        if (Object.keys(d).length == 2) {
-            if ("Later batch (BA.3+BA.4)" in d) {
-                later.values.push({
-                    y: +d["Later batch (BA.3+BA.4)"],
-                    x: +d["timeline"]
-                });
-            } else {
-                earlier.values.push({
-                    y: +d["Earlier batch (BA.1+BA.2)"],
-                    x: +d["timeline"]
-                });
-            }
-        } else if (Object.keys(d).length == 3) {
-            later.values.push({
-                y: +d["Later batch (BA.3+BA.4)"],
-                x: +d["timeline"]
-            });
-            earlier.values.push({
-                y: +d["Earlier batch (BA.1+BA.2)"],
-                x: +d["timeline"]
-            });
-
-        } else {
-            earlier.values.push({
-                y: +d["Earlier batch (BA.1+BA.2)"],
-                x: +d["timeline"]
-            });
-            eLower.values.push({
-                y: +d[`Earlier batch (BA.1+BA.2)_lower_0.95`],
-                x: +d["timeline"]
-            });
-            eUpper.values.push({
-                y: +d[`Earlier batch (BA.1+BA.2)_upper_0.95`],
-                x: +d["timeline"]
-            });
-        }
-    })
-    pathsJSON.push(earlier, eLower, eUpper, later)
-    return pathsJSON;
+    return newData;
 }
 //Get random color
 function getRandomColor() {
@@ -2292,4 +2404,12 @@ function highlightData(className) {
 
 function removeHighlight(className) {
     $(`.${className}`).removeClass('highlight-data');
+}
+function addScrollableIfWindowIsLarge(className) {
+    //$('.device-' + 'lg').is(':visible') || $('.device-' + 'md').is(':visible')
+    console.log('scrollable')
+    if (window.innerWidth > 767) {
+        console.log('if scrollable')
+        $(`#data-table-tbody tr.${className}`)[0].scrollIntoView();
+    }
 }
